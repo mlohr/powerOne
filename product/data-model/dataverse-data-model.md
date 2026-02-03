@@ -431,11 +431,23 @@ erDiagram
 
 ## 7. Implementation Notes
 
+### Naming Convention
+
+| Property | Convention | Example |
+|---|---|---|
+| **Schema name** | Publisher prefix + PascalCase | `po_Objective` |
+| **Logical name** | Lowercase schema name (auto-derived) | `po_objective` |
+| **Display name** | Clean, human-readable — no prefix | Objective |
+| **Plural display name** | Clean plural form | Objectives |
+
+The `po_` publisher prefix appears on schema/logical names only. Display names shown in the UI (site map, forms, views, search) are clean. The creation script sets display names explicitly via the Web API after table creation.
+
 ### SDK vs Web API Split
 
 | Operation | Tool |
 |---|---|
 | Create tables + primitive/choice columns | Python SDK (`create_table()`, `create_columns()`) |
+| Set table and column display names | Web API (PATCH `EntityDefinitions`, `Attributes`) |
 | Create Memo columns (Description, Notes, CriteriaJson) | Web API (`MemoAttributeMetadata`) |
 | Create all 1:N relationships (R1–R16) | Web API (`OneToManyRelationshipMetadata`) |
 | Create all N:N relationships (R17–R20) | Web API (`ManyToManyRelationshipMetadata`) |
@@ -449,8 +461,10 @@ erDiagram
 3. **Programs**: `po_Program` → `po_ActivityUpdate`
 4. **Process**: `po_Ritual`
 5. **User features**: `po_SavedFilter`
-6. **Relationships**: All 1:N first, then N:N
-7. **Seed data**: Sample records for each table
+6. **Display names**: Set clean display names on all tables and columns (removes `po_` from UI)
+7. **Memo columns**: Description, Notes, CriteriaJson
+8. **Relationships**: All 1:N first, then N:N
+9. **Seed data**: Sample records for each table
 
 ### Security Roles
 

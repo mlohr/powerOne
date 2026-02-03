@@ -9,9 +9,10 @@ in dependency-ordered phases:
   Phase 3: OKR detail tables (depend on Phase 2)
   Phase 4: Programs & process tables (depend on Phase 1)
   Phase 5: User feature tables (depend on Phase 1)
-  Phase 6: Memo columns via Web API (tables must exist)
-  Phase 7: 1:N relationships via Web API (tables must exist)
-  Phase 8: N:N relationships via Web API (tables must exist)
+  Phase 6: Display names via Web API (clean names without publisher prefix)
+  Phase 7: Memo columns via Web API (tables must exist)
+  Phase 8: 1:N relationships via Web API (tables must exist)
+  Phase 9: N:N relationships via Web API (tables must exist)
 
 Prerequisites:
     pip install PowerPlatform-Dataverse-Client azure-identity requests
@@ -126,6 +127,87 @@ class ActivityType(IntEnum):
     PROGRESS_UPDATE = 100000004
     LEAD_ADDED = 100000005
     LEAD_REMOVED = 100000006
+
+
+# =============================================================================
+# Display Name Definitions
+# =============================================================================
+# The SDK create_table() derives display names from the schema name, which
+# includes the publisher prefix (e.g. "po_Sprint" → display "po Sprint").
+# We fix this by setting clean display names via the Web API after creation.
+
+TABLE_DISPLAY_NAMES = {
+    f"{P}_Sprint": ("Sprint", "Sprints"),
+    f"{P}_OrganizationalUnit": ("Organizational Unit", "Organizational Units"),
+    f"{P}_Objective": ("Objective", "Objectives"),
+    f"{P}_KeyResult": ("Key Result", "Key Results"),
+    f"{P}_Metric": ("Metric", "Metrics"),
+    f"{P}_MetricUpdate": ("Metric Update", "Metric Updates"),
+    f"{P}_Task": ("Task", "Tasks"),
+    f"{P}_Program": ("Program", "Programs"),
+    f"{P}_ActivityUpdate": ("Activity Update", "Activity Updates"),
+    f"{P}_Ritual": ("Ritual", "Rituals"),
+    f"{P}_SavedFilter": ("Saved Filter", "Saved Filters"),
+}
+
+# Column display names: (table_schema, column_schema, display_name)
+# Lookup columns get display names via relationship definitions (Phase 8).
+# Memo columns get display names via create_memo_column() (Phase 7).
+COLUMN_DISPLAY_NAMES = [
+    # Sprint
+    (f"{P}_Sprint", f"{P}_Name", "Name"),
+    (f"{P}_Sprint", f"{P}_StartDate", "Start Date"),
+    (f"{P}_Sprint", f"{P}_EndDate", "End Date"),
+    (f"{P}_Sprint", f"{P}_Status", "Status"),
+    # Organizational Unit
+    (f"{P}_OrganizationalUnit", f"{P}_Name", "Name"),
+    (f"{P}_OrganizationalUnit", f"{P}_Level", "Level"),
+    # Objective
+    (f"{P}_Objective", f"{P}_Title", "Title"),
+    (f"{P}_Objective", f"{P}_Status", "Status"),
+    (f"{P}_Objective", f"{P}_Progress", "Progress"),
+    # Key Result
+    (f"{P}_KeyResult", f"{P}_Title", "Title"),
+    (f"{P}_KeyResult", f"{P}_Status", "Status"),
+    (f"{P}_KeyResult", f"{P}_Progress", "Progress"),
+    # Metric
+    (f"{P}_Metric", f"{P}_Name", "Name"),
+    (f"{P}_Metric", f"{P}_Scale", "Scale"),
+    (f"{P}_Metric", f"{P}_Direction", "Direction"),
+    (f"{P}_Metric", f"{P}_BaselineValue", "Baseline Value"),
+    (f"{P}_Metric", f"{P}_CurrentValue", "Current Value"),
+    (f"{P}_Metric", f"{P}_TargetValue", "Target Value"),
+    (f"{P}_Metric", f"{P}_Unit", "Unit"),
+    # Metric Update
+    (f"{P}_MetricUpdate", f"{P}_Name", "Name"),
+    (f"{P}_MetricUpdate", f"{P}_Value", "Value"),
+    (f"{P}_MetricUpdate", f"{P}_RecordedAt", "Recorded At"),
+    # Task
+    (f"{P}_Task", f"{P}_Description", "Description"),
+    (f"{P}_Task", f"{P}_Status", "Status"),
+    (f"{P}_Task", f"{P}_CompletedAt", "Completed At"),
+    # Program
+    (f"{P}_Program", f"{P}_Name", "Name"),
+    (f"{P}_Program", f"{P}_OverallProgress", "Overall Progress"),
+    (f"{P}_Program", f"{P}_EntitiesInvolved", "Entities Involved"),
+    # Activity Update
+    (f"{P}_ActivityUpdate", f"{P}_Description", "Description"),
+    (f"{P}_ActivityUpdate", f"{P}_Type", "Type"),
+    (f"{P}_ActivityUpdate", f"{P}_Timestamp", "Timestamp"),
+    (f"{P}_ActivityUpdate", f"{P}_UserName", "User Name"),
+    # Ritual
+    (f"{P}_Ritual", f"{P}_Title", "Title"),
+    (f"{P}_Ritual", f"{P}_Type", "Type"),
+    (f"{P}_Ritual", f"{P}_Status", "Status"),
+    (f"{P}_Ritual", f"{P}_DateTime", "Date Time"),
+    (f"{P}_Ritual", f"{P}_Facilitator", "Facilitator"),
+    (f"{P}_Ritual", f"{P}_ParticipantCount", "Participant Count"),
+    (f"{P}_Ritual", f"{P}_Duration", "Duration"),
+    # Saved Filter
+    (f"{P}_SavedFilter", f"{P}_Name", "Name"),
+    (f"{P}_SavedFilter", f"{P}_IsPreset", "Is Preset"),
+    (f"{P}_SavedFilter", f"{P}_IsShared", "Is Shared"),
+]
 
 
 # =============================================================================
@@ -333,6 +415,57 @@ def create_many_to_many(headers, base_url, entity1, entity1_display,
     print(f"  + N:N  {rel_name}  ({entity1} <-> {entity2})")
 
 
+def set_table_display_name(headers, base_url, table_logical_name, display_name, plural_display_name):
+    """Set the display name and plural display name for a table via Web API."""
+    payload = {
+        "DisplayName": {
+            "@odata.type": "Microsoft.Dynamics.CRM.Label",
+            "LocalizedLabels": [{
+                "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+                "Label": display_name,
+                "LanguageCode": 1033,
+            }],
+        },
+        "DisplayCollectionName": {
+            "@odata.type": "Microsoft.Dynamics.CRM.Label",
+            "LocalizedLabels": [{
+                "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+                "Label": plural_display_name,
+                "LanguageCode": 1033,
+            }],
+        },
+    }
+    resp = requests.patch(
+        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions(LogicalName='{table_logical_name}')",
+        json=payload,
+        headers=headers,
+    )
+    resp.raise_for_status()
+    print(f"  + Table: {table_logical_name} → {display_name} ({plural_display_name})")
+
+
+def set_column_display_name(headers, base_url, table_logical_name, column_logical_name, display_name):
+    """Set the display name for a column via Web API."""
+    payload = {
+        "DisplayName": {
+            "@odata.type": "Microsoft.Dynamics.CRM.Label",
+            "LocalizedLabels": [{
+                "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+                "Label": display_name,
+                "LanguageCode": 1033,
+            }],
+        },
+    }
+    resp = requests.patch(
+        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions(LogicalName='{table_logical_name}')"
+        f"/Attributes(LogicalName='{column_logical_name}')",
+        json=payload,
+        headers=headers,
+    )
+    resp.raise_for_status()
+    print(f"  + Column: {table_logical_name}.{column_logical_name} → {display_name}")
+
+
 # =============================================================================
 # Main Script
 # =============================================================================
@@ -361,7 +494,7 @@ def main():
     phase_header(1, "FOUNDATION TABLES", "Sprint + OrganizationalUnit — no foreign keys needed")
 
     # Sprint
-    print("Creating po_Sprint...")
+    print("Creating Sprint (po_Sprint)...")
     with_retry(lambda: client.create_table(
         f"{P}_Sprint",
         {
@@ -374,7 +507,7 @@ def main():
     print("  Created.\n")
 
     # Organizational Unit
-    print("Creating po_OrganizationalUnit...")
+    print("Creating Organizational Unit (po_OrganizationalUnit)...")
     with_retry(lambda: client.create_table(
         f"{P}_OrganizationalUnit",
         {
@@ -390,7 +523,7 @@ def main():
     phase_header(2, "CORE OKR TABLES", "Objective + KeyResult — SDK columns only, lookups added in Phase 7")
 
     # Objective
-    print("Creating po_Objective...")
+    print("Creating Objective (po_Objective)...")
     with_retry(lambda: client.create_table(
         f"{P}_Objective",
         {
@@ -402,7 +535,7 @@ def main():
     print("  Created.\n")
 
     # Key Result
-    print("Creating po_KeyResult...")
+    print("Creating Key Result (po_KeyResult)...")
     with_retry(lambda: client.create_table(
         f"{P}_KeyResult",
         {
@@ -419,7 +552,7 @@ def main():
     phase_header(3, "OKR DETAIL TABLES", "Metric, MetricUpdate, Task — depend on KeyResult")
 
     # Metric
-    print("Creating po_Metric...")
+    print("Creating Metric (po_Metric)...")
     with_retry(lambda: client.create_table(
         f"{P}_Metric",
         {
@@ -435,7 +568,7 @@ def main():
     print("  Created.\n")
 
     # Metric Update
-    print("Creating po_MetricUpdate...")
+    print("Creating Metric Update (po_MetricUpdate)...")
     with_retry(lambda: client.create_table(
         f"{P}_MetricUpdate",
         {
@@ -447,7 +580,7 @@ def main():
     print("  Created.\n")
 
     # Task
-    print("Creating po_Task...")
+    print("Creating Task (po_Task)...")
     with_retry(lambda: client.create_table(
         f"{P}_Task",
         {
@@ -464,7 +597,7 @@ def main():
     phase_header(4, "PROGRAMS & PROCESS TABLES", "Program, ActivityUpdate, Ritual")
 
     # Program
-    print("Creating po_Program...")
+    print("Creating Program (po_Program)...")
     with_retry(lambda: client.create_table(
         f"{P}_Program",
         {
@@ -476,7 +609,7 @@ def main():
     print("  Created.\n")
 
     # Activity Update
-    print("Creating po_ActivityUpdate...")
+    print("Creating Activity Update (po_ActivityUpdate)...")
     with_retry(lambda: client.create_table(
         f"{P}_ActivityUpdate",
         {
@@ -489,7 +622,7 @@ def main():
     print("  Created.\n")
 
     # Ritual
-    print("Creating po_Ritual...")
+    print("Creating Ritual (po_Ritual)...")
     with_retry(lambda: client.create_table(
         f"{P}_Ritual",
         {
@@ -509,7 +642,7 @@ def main():
     # ====================================================================
     phase_header(5, "USER FEATURE TABLES", "SavedFilter")
 
-    print("Creating po_SavedFilter...")
+    print("Creating Saved Filter (po_SavedFilter)...")
     with_retry(lambda: client.create_table(
         f"{P}_SavedFilter",
         {
@@ -521,9 +654,35 @@ def main():
     print("  Created.\n")
 
     # ====================================================================
-    # PHASE 6: Memo Columns (Web API — tables must exist)
+    # PHASE 6: Display Names (Web API — tables and columns must exist)
     # ====================================================================
-    phase_header(6, "MEMO COLUMNS", "Multi-line text columns via Web API (SDK doesn't support Memo)")
+    phase_header(6, "DISPLAY NAMES",
+                 "Set clean display names for tables and columns (remove publisher prefix from UI)")
+
+    headers = get_web_api_headers(credential, ENV_URL)
+
+    print("Setting table display names...")
+    for schema_name, (display, plural) in TABLE_DISPLAY_NAMES.items():
+        with_retry(
+            lambda s=schema_name, d=display, p=plural:
+                set_table_display_name(headers, ENV_URL, ln(s), d, p),
+            f"Display name for {schema_name}",
+        )
+
+    print("\nSetting column display names...")
+    for table_schema, col_schema, display in COLUMN_DISPLAY_NAMES:
+        with_retry(
+            lambda t=table_schema, c=col_schema, d=display:
+                set_column_display_name(headers, ENV_URL, ln(t), ln(c), d),
+            f"Display name for {table_schema}.{col_schema}",
+        )
+
+    print()
+
+    # ====================================================================
+    # PHASE 7: Memo Columns (Web API — tables must exist)
+    # ====================================================================
+    phase_header(7, "MEMO COLUMNS", "Multi-line text columns via Web API (SDK doesn't support Memo)")
 
     # Refresh token for Web API calls
     headers = get_web_api_headers(credential, ENV_URL)
@@ -545,9 +704,9 @@ def main():
     print()
 
     # ====================================================================
-    # PHASE 7: 1:N Relationships (Web API — all tables must exist)
+    # PHASE 8: 1:N Relationships (Web API — all tables must exist)
     # ====================================================================
-    phase_header(7, "1:N RELATIONSHIPS", "16 one-to-many relationships with lookup columns")
+    phase_header(8, "1:N RELATIONSHIPS", "16 one-to-many relationships with lookup columns")
 
     # Refresh token
     headers = get_web_api_headers(credential, ENV_URL)
@@ -735,9 +894,9 @@ def main():
     print()
 
     # ====================================================================
-    # PHASE 8: N:N Relationships (Web API — all tables must exist)
+    # PHASE 9: N:N Relationships (Web API — all tables must exist)
     # ====================================================================
-    phase_header(8, "N:N RELATIONSHIPS", "4 many-to-many relationships with intersect tables")
+    phase_header(9, "N:N RELATIONSHIPS", "4 many-to-many relationships with intersect tables")
 
     # Refresh token
     headers = get_web_api_headers(credential, ENV_URL)
@@ -797,17 +956,20 @@ def main():
     print(f"\n{'='*70}")
     print("  COMPLETE")
     print(f"{'='*70}")
+    num_columns = len(COLUMN_DISPLAY_NAMES)
     print(f"""
 Schema creation finished.
 
 Summary:
   Tables created:           11
+  Display names set:        11 tables + {num_columns} columns
   Memo columns added:       4
   1:N relationships:        16
   N:N relationships:        4
 
 Verify in Power Apps:
   https://make.powerapps.com → Tables → filter by "{P}_"
+  Table display names should show without the "{P}_" prefix (e.g. "Sprint", not "po_Sprint")
 
 Next steps:
   1. Configure security roles (Admin, Program Lead, Objective Owner, Team Member, Viewer)
