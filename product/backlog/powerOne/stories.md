@@ -1,6 +1,7 @@
-# PowerOne — User Story Cards
+# powerOne — User Story Cards
 
 > Platform: Canvas App on Microsoft Dataverse
+> Admin master data CRUD is handled by [power1Admin](../power1Admin/stories.md) (Model-Driven App)
 
 ---
 
@@ -30,6 +31,7 @@
 - Use the Python SDK script at `product/data-model/create_powerone_schema.py` for automated deployment
 - Memo columns and relationships require Web API (not supported by SDK)
 - Deploy to a sandbox environment first, validate, then promote
+- This schema is shared by both powerOne (Canvas App) and power1Admin (Model-Driven App)
 
 ---
 
@@ -56,6 +58,7 @@
 - Use Organization-level read for most tables (everyone can see OKRs)
 - Use User-level write for owned records
 - Admin role should be assigned to a small group
+- These roles apply to both the Canvas App and the Model-Driven App
 
 ---
 
@@ -72,13 +75,14 @@
 - [ ] Three environments provisioned: Development, Test, Production
 - [ ] Power Platform Pipeline configured with Dev → Test → Prod stages
 - [ ] Solution created with `po_` publisher prefix
-- [ ] All components stored in the managed solution
+- [ ] All components stored in the managed solution (both Canvas App and Model-Driven App)
 - [ ] Export/import tested successfully between environments
 - [ ] Solution checker enabled on Test/Prod import
 
 #### Power Platform Notes
 - Use built-in Power Platform Pipelines (no Azure DevOps required for MVP)
 - Unmanaged solution in Dev, Managed in Test/Prod
+- Both powerOne and power1Admin apps are in the same solution
 - Consider Git integration later for source control
 
 ---
@@ -100,7 +104,7 @@
 - [ ] Named formulas (App.Formulas) set up for shared computed values
 - [ ] Global color constants defined matching design tokens (teal primary, blue secondary, slate neutral)
 - [ ] Inter font family applied throughout
-- [ ] Blank placeholder screens created for all sections (OKR Hierarchy, Programs, Metrics, Rituals, Admin)
+- [ ] Blank placeholder screens created for all sections (OKR Hierarchy, Programs, Metrics, Rituals)
 - [ ] App published and playable with navigation stubs
 
 #### Power Platform Notes
@@ -108,6 +112,7 @@
 - Set delegation warning to 10 during development
 - Enable explicit column selection for performance
 - Use screen templates for consistent layout patterns
+- Admin section not needed in Canvas App — handled by power1Admin
 
 ---
 
@@ -117,7 +122,7 @@
 
 ### US-005: Build Sidebar Navigation
 
-**Story:** As a user, I want a persistent sidebar with navigation links to all sections, so that I can move between OKR Hierarchy, Programs, Metrics, Rituals, and Admin.
+**Story:** As a user, I want a persistent sidebar with navigation links to all sections, so that I can move between OKR Hierarchy, Programs, Metrics, and Rituals.
 
 **Story Points:** 5
 **Priority:** P1 - Must Have
@@ -128,16 +133,17 @@
 - [ ] Fixed sidebar (240-280px) on the left side of the screen
 - [ ] PowerOne logo/brand at top of sidebar
 - [ ] Navigation items: OKR Hierarchy, Programs, Metrics & Progress, OKR Rituals
-- [ ] Utility items below divider: Admin, Settings, Help
+- [ ] Utility items below divider: Settings, Help
 - [ ] Active section highlighted with teal accent
 - [ ] Hover states on all navigation items
-- [ ] Icons displayed next to each label (Target, Folder, TrendingUp, Calendar, Shield, Settings, HelpCircle)
+- [ ] Icons displayed next to each label (Target, Folder, TrendingUp, Calendar, Settings, HelpCircle)
 - [ ] Content area fills remaining width on the right
 
 #### Power Platform Notes
 - Implement sidebar as a component or container group on each screen
 - Use a global variable (gblActiveSection) to track active screen
 - Consider a component library for reuse across screens
+- No "Admin" link in Canvas App sidebar — admin access is via the separate power1Admin app
 
 ---
 
@@ -161,6 +167,7 @@
 - Use `User().Email` to look up the systemuser record
 - Cache user context in a global variable on app start
 - Load org unit memberships via the N:N intersect table
+- Org unit assignments are managed in power1Admin — Canvas App only reads them
 
 ---
 
@@ -187,83 +194,6 @@
 
 ---
 
-## E2: Admin & Master Data
-
----
-
-### US-008: Organizational Unit Management
-
-**Story:** As an admin, I want to create, edit, and view organizational units in a hierarchical list, so that the org structure is maintained as master data.
-
-**Story Points:** 5
-**Priority:** P1 - Must Have
-**Tags:** canvas-app, admin, master-data, dataverse
-**Dependencies:** US-007
-
-#### Acceptance Criteria
-- [ ] List view showing all organizational units grouped or indented by level
-- [ ] Level indicator (Group/Entity/Domain/Department/Team) displayed for each unit
-- [ ] Create new unit: name input, level dropdown, parent unit selector (filtered by valid parent levels)
-- [ ] Edit existing unit: inline or side panel edit
-- [ ] Validation: parent level must be exactly one level above child level
-- [ ] Cannot delete units that have child units or linked Objectives (Restrict cascade)
-- [ ] Changes saved immediately to po_OrganizationalUnit table
-
-#### Power Platform Notes
-- Use Gallery control with delegable Filter on po_Level
-- Parent selector should filter based on selected level (e.g., selecting "Domain" shows only Entity-level units as parents)
-
----
-
-### US-009: Sprint Management
-
-**Story:** As an admin, I want to create and manage sprints with start/end dates and lifecycle status, so that OKRs and rituals can be assigned to time periods.
-
-**Story Points:** 5
-**Priority:** P1 - Must Have
-**Tags:** canvas-app, admin, master-data, dataverse
-**Dependencies:** US-007
-
-#### Acceptance Criteria
-- [ ] List view showing all sprints sorted by start date (newest first)
-- [ ] Status badge displayed (Inactive/Active/Done)
-- [ ] Create sprint: name (e.g., "1.26"), start date, end date
-- [ ] Edit sprint: update dates and status
-- [ ] Validation: only one sprint can be Active at a time
-- [ ] Validation: end date must be after start date
-- [ ] Automatic status determination based on current date (optional)
-- [ ] Cannot delete sprints that have linked Objectives (Restrict cascade)
-
-#### Power Platform Notes
-- Sprint name follows convention "number.year" — validate format
-- Active sprint enforcement: before setting Active, check no other sprint is Active
-- Consider a Power Automate flow for auto-activating sprints based on date
-
----
-
-### US-010: User-OrgUnit Assignment
-
-**Story:** As an admin, I want to assign users to organizational units, so that pre-set filters and team membership work correctly.
-
-**Story Points:** 3
-**Priority:** P1 - Must Have
-**Tags:** canvas-app, admin, master-data, dataverse
-**Dependencies:** US-008
-
-#### Acceptance Criteria
-- [ ] View users within a selected organizational unit
-- [ ] Add users to an organizational unit via user search/picker
-- [ ] Remove users from an organizational unit
-- [ ] A user can belong to multiple organizational units
-- [ ] Changes written to po_user_orgunit N:N relationship
-
-#### Power Platform Notes
-- Use Relate() and Unrelate() functions for N:N management
-- User picker should search systemuser by name or email
-- Gallery showing current members with remove button
-
----
-
 ## E3: OKR Hierarchy
 
 ---
@@ -275,7 +205,8 @@
 **Story Points:** 8
 **Priority:** P1 - Must Have
 **Tags:** canvas-app, okr-hierarchy, frontend, dataverse
-**Dependencies:** US-007, US-008, US-009
+**Dependencies:** US-007
+**Cross-project data dependency:** Requires org units and sprints to exist in Dataverse (managed by power1Admin)
 
 #### Acceptance Criteria
 - [ ] Gallery displays Objectives: title, org unit (with level badge), owner name, status badge, sprint, progress indicator, KR count
@@ -291,6 +222,7 @@
 - Load Key Results on expand (not all at once) to manage payload size
 - Use delegable Filter() and SortByColumns() only
 - Consider ClearCollect for the active sprint's data if row count <2,000
+- Org unit and sprint reference data must exist — enter via power1Admin before testing
 
 ---
 
@@ -433,7 +365,7 @@
 - [ ] Filter bar positioned at top of OKR list
 - [ ] Dropdowns: Organizational Unit (multi-select), Status (multi-select), Sprint (single-select), Owner (single-select), Program (multi-select)
 - [ ] All dropdowns include search input with real-time filtering
-- [ ] Active filters displayed as chips below the bar with "×" remove buttons
+- [ ] Active filters displayed as chips below the bar with "x" remove buttons
 - [ ] "Clear All" button resets all filters
 - [ ] Filter changes immediately update the OKR list gallery
 - [ ] All filtering uses delegable Dataverse functions
@@ -614,6 +546,7 @@
 - Sprint: simple Patch() on the lookup column
 - Programs N:N: use Relate() and Unrelate() to manage the relationship
 - ComboBox for multi-select program picker
+- Sprint data managed by power1Admin — dropdowns read from Dataverse
 
 ---
 
@@ -708,7 +641,7 @@
 - [ ] Program overall progress = average of linked Objectives' progress percentages
 - [ ] Objective progress = average of its Key Results' progress percentages
 - [ ] Key Result progress = average of its Metrics' progress percentages
-- [ ] Metric progress = ((currentValue - baseline) / (target - baseline)) × 100, clamped 0-100
+- [ ] Metric progress = ((currentValue - baseline) / (target - baseline)) x 100, clamped 0-100
 - [ ] Progress recalculated when metric values are updated
 - [ ] po_OverallProgress on Program, po_Progress on Objective and Key Result updated
 
@@ -805,7 +738,7 @@
 **Dependencies:** US-031
 
 #### Acceptance Criteria
-- [ ] Each metric shows progress: ((current - baseline) / (target - baseline)) × 100
+- [ ] Each metric shows progress: ((current - baseline) / (target - baseline)) x 100
 - [ ] Progress clamped between 0% and 100%
 - [ ] Direction-aware: for "Decrease" metrics, formula is inverted
 - [ ] Progress displayed as text percentage (e.g., "75%")
@@ -853,7 +786,8 @@
 **Story Points:** 3
 **Priority:** P1 - Must Have
 **Tags:** canvas-app, rituals, frontend, dataverse
-**Dependencies:** US-007, US-009
+**Dependencies:** US-007
+**Cross-project data dependency:** Requires sprint data in Dataverse (managed by power1Admin)
 
 #### Acceptance Criteria
 - [ ] "Upcoming" section: rituals in next 14 days (po_Status = Upcoming, po_DateTime > Now())
@@ -867,6 +801,7 @@
 - Two Gallery controls: one filtered for upcoming, one for recent
 - Delegable Filter() on po_DateTime and po_Status
 - Date comparison: DateDiff() for the 14-day window
+- Sprint dropdown reads from Dataverse — data managed by power1Admin
 
 ---
 

@@ -1,0 +1,37 @@
+ID,Title,User Story,Story Points,Priority,MoSCoW,Epic,Dependencies,Tags,Sprint
+US-001,Deploy Dataverse Schema,"As an admin, I want the complete Dataverse schema deployed to the environment, so that the Canvas App has a data foundation to build on.",8,P1,Must Have,E0: Foundation,,dataverse;infrastructure;schema,1
+US-002,Configure Security Roles,"As an admin, I want security roles configured in Dataverse, so that users have appropriate access to tables based on their role.",5,P1,Must Have,E0: Foundation,US-001,dataverse;security;admin,1
+US-003,Set Up ALM Pipeline,"As a developer, I want a Dev/Test/Prod ALM pipeline configured, so that solution changes flow through environments safely.",5,P2,Should Have,E0: Foundation,US-001,alm;devops;governance,2
+US-004,Create Canvas App Project,"As a developer, I want the Canvas App project created in the solution with basic screen scaffolding, so that feature development can begin.",8,P1,Must Have,E0: Foundation,US-001;US-002,canvas-app;infrastructure,2
+US-005,Build Sidebar Navigation,"As a user, I want a persistent sidebar with navigation links to all sections, so that I can move between areas of the app.",5,P1,Must Have,E1: Shell,US-004,canvas-app;shell;navigation,3
+US-006,Implement User Context,"As a user, I want the app to know who I am and what organizational units I belong to, so that filters and assignments default to my context.",3,P1,Must Have,E1: Shell,US-004,canvas-app;authentication,3
+US-007,Build Section Routing,"As a user, I want clicking a navigation item to display the corresponding section content, so that each area of the app is accessible.",8,P1,Must Have,E1: Shell,US-005;US-006,canvas-app;shell;routing,4
+US-011,OKR List View,"As a user, I want to see a list of Objectives with expandable Key Results, so that I can browse the OKR structure.",8,P1,Must Have,E3: OKR Hierarchy,US-007,canvas-app;okr-hierarchy;frontend,5
+US-012,Objective Create/Edit Form,"As an Objective Owner, I want to create and edit Objectives via a side panel with all required fields.",8,P1,Must Have,E3: OKR Hierarchy,US-011,canvas-app;okr-hierarchy;forms,6
+US-013,Key Result Create/Edit Form,"As a team member, I want to create and edit Key Results within an Objective.",8,P1,Must Have,E3: OKR Hierarchy,US-012,canvas-app;okr-hierarchy;forms,7
+US-014,Metric Definition on Key Results,"As a team member, I want to define 1-3 metrics on each Key Result with scale, baseline, and target.",5,P1,Must Have,E3: OKR Hierarchy,US-013,canvas-app;okr-hierarchy;forms,8
+US-015,Lifecycle Status Management,"As an Objective Owner, I want to change the lifecycle status of Objectives and Key Results through valid transitions.",5,P1,Must Have,E3: OKR Hierarchy,US-012;US-013,canvas-app;okr-hierarchy;business-logic,9
+US-016,Cascade Linking,"As an Objective Owner, I want to link a Key Result to a lower-level Objective for cascading alignment.",5,P1,Must Have,E3: OKR Hierarchy,US-013;US-012,canvas-app;okr-hierarchy;business-logic,9
+US-017,Filter Bar with Searchable Dropdowns,"As a user, I want a filter bar with searchable dropdowns to narrow down Objectives by org unit, status, sprint, owner, or program.",8,P1,Must Have,E3: OKR Hierarchy,US-011,canvas-app;okr-hierarchy;filtering,10
+US-018,Pre-set Filters,"As a user, I want quick-access pre-set filters (My OKRs, My Entity, My Domain) in the sidebar.",3,P1,Must Have,E3: OKR Hierarchy,US-017,canvas-app;okr-hierarchy;filtering,10
+US-019,Custom Saved Filters,"As a user, I want to save my current filter combination as a named custom filter for reuse.",5,P2,Should Have,E3: OKR Hierarchy,US-017;US-018,canvas-app;okr-hierarchy;filtering,11
+US-020,View Modes,"As a user, I want to switch between full, compact, and hierarchy views of the OKR list.",8,P2,Should Have,E3: OKR Hierarchy,US-011,canvas-app;okr-hierarchy;frontend,11
+US-021,Breadcrumb Navigation,"As a user, I want breadcrumb navigation showing my position in the org hierarchy or OKR cascade chain.",5,P2,Should Have,E3: OKR Hierarchy,US-011;US-016,canvas-app;okr-hierarchy;navigation,17
+US-022,Cascade Navigation,"As a user, I want to click cascade links to navigate directly to linked parent/child OKRs.",5,P2,Should Have,E3: OKR Hierarchy,US-016;US-021,canvas-app;okr-hierarchy;navigation,17
+US-023,Task Management on Key Results,"As a team member, I want to create, complete, and delete tasks within a Key Result.",5,P1,Must Have,E3: OKR Hierarchy,US-013,canvas-app;okr-hierarchy;tasks,8
+US-024,Assign Objectives to Sprint and Programs,"As an Objective Owner, I want to assign an Objective to a Sprint and optionally to Programs.",3,P1,Must Have,E3: OKR Hierarchy,US-012,canvas-app;okr-hierarchy;forms,6
+US-025,Programs Dashboard,"As a user, I want to view all programs as cards on a dashboard with key metrics.",5,P1,Must Have,E4: Programs,US-007;US-012,canvas-app;programs;frontend,12
+US-026,Program Create/Edit Form,"As a Program Lead, I want to create and edit programs with description, leads, and linked objectives.",5,P1,Must Have,E4: Programs,US-025,canvas-app;programs;forms,12
+US-027,Program Detail View,"As a user, I want to view a program's full details including linked objectives with progress breakdown.",5,P1,Must Have,E4: Programs,US-026,canvas-app;programs;frontend,13
+US-028,Program Progress Rollup,"As a user, I want program progress automatically calculated from linked objectives' progress.",5,P2,Should Have,E4: Programs,US-027;US-014,dataverse;business-logic;automation,13
+US-029,Activity Feed,"As a user, I want to see a chronological activity feed on the program detail page.",3,P3,Could Have,E4: Programs,US-027,canvas-app;programs;frontend,15
+US-030,My Key Results List,"As a team member, I want to see all Key Results in the active sprint where I'm part of the KR team.",3,P1,Must Have,E5: Metrics,US-007;US-014,canvas-app;metrics;frontend,14
+US-031,Metric Value Update,"As a team member, I want to enter a new value for a metric and save it to track progress.",5,P1,Must Have,E5: Metrics,US-030,canvas-app;metrics;forms,14
+US-032,Progress Calculation and Display,"As a user, I want to see progress as a percentage next to each Key Result and metric.",3,P1,Must Have,E5: Metrics,US-031,canvas-app;metrics;frontend,15
+US-033,Metric Update History,"As a team member, I want to see the history of updates for a metric.",3,P2,Should Have,E5: Metrics,US-031,canvas-app;metrics;frontend,15
+US-034,Rituals Dashboard,"As a user, I want a dashboard showing upcoming and recently completed rituals.",3,P1,Must Have,E6: Rituals,US-007,canvas-app;rituals;frontend,16
+US-035,Ritual Create/Edit Form,"As a facilitator, I want to create and edit rituals with type, date, and sprint assignment.",3,P1,Must Have,E6: Rituals,US-034,canvas-app;rituals;forms,16
+US-036,Ritual Facilitation View,"As a facilitator, I want a dedicated view for conducting a ritual session where I can capture notes.",5,P2,Should Have,E6: Rituals,US-035,canvas-app;rituals;frontend,16
+US-037,Past Rituals List,"As a user, I want to browse past rituals filtered by sprint to review notes and outcomes.",2,P3,Could Have,E6: Rituals,US-035,canvas-app;rituals;frontend,17
+US-038,Responsive Layout,"As a user, I want the app to adapt between desktop and tablet screen sizes.",8,P3,Could Have,E1: Shell,US-007,canvas-app;frontend;responsive,18
+US-039,Dark Mode Support,"As a user, I want the app to support a dark color scheme.",3,P3,Could Have,E1: Shell,US-007,canvas-app;frontend;theming,18

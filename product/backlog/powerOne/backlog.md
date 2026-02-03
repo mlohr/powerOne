@@ -1,10 +1,10 @@
-# PowerOne — Product Backlog
+# powerOne — Product Backlog
 
 > **Platform**: Microsoft Power Platform — Canvas App on Dataverse
 > **Publisher prefix**: `po_`
 > **Sprint cadence**: 1-week sprints
 > **Estimation basis**: Person-days (8h), Fibonacci story points (relative complexity)
-> **Assumed velocity**: 10-12 points/sprint
+> **Assumed velocity**: 10–12 points/sprint
 
 ---
 
@@ -12,27 +12,30 @@
 
 | Metric | Value |
 |--------|-------|
-| **Total Stories** | 39 |
-| **Total Story Points** | 194 |
+| **Total Stories** | 36 |
+| **Total Story Points** | 184 |
 | **Sprint Cadence** | 1-week sprints |
-| **Sprints Estimated** | 17-20 (at 10-12 pts/sprint) |
-| **Must Have (P1)** | 24 stories, 134 pts |
-| **Should Have (P2)** | 11 stories, 44 pts |
-| **Could Have (P3)** | 4 stories, 13 pts |
-| **Critical Path** | Schema → Security → Shell → OKR List → OKR CRUD → Metrics |
+| **Sprints Estimated** | 16–20 (at 10–12 pts/sprint) |
+| **Must Have (P1)** | 24 stories, 127 pts |
+| **Should Have (P2)** | 8 stories, 41 pts |
+| **Could Have (P3)** | 4 stories, 16 pts |
+| **Critical Path** | Schema → Security → Canvas App → Shell → OKR List → OKR CRUD → Metrics |
+
+> **Note**: Admin master data CRUD (Org Units, Sprints, User-OrgUnit assignments) has been moved to the **power1Admin** Model-Driven App. See [power1Admin backlog](../power1Admin/backlog.md).
 
 ### Effort by Epic
 
 | Epic | Stories | Points | % of Total |
 |------|---------|--------|------------|
 | E0: Foundation & Infrastructure | 4 | 26 | 14% |
-| E1: Application Shell | 3 | 16 | 8% |
-| E2: Admin & Master Data | 3 | 13 | 7% |
-| E3: OKR Hierarchy | 14 | 86 | 45% |
-| E4: Programs | 5 | 26 | 14% |
-| E5: Metrics & Progress | 4 | 14 | 7% |
+| E1: Application Shell | 5 | 27 | 15% |
+| E3: OKR Hierarchy | 14 | 81 | 44% |
+| E4: Programs | 5 | 23 | 13% |
+| E5: Metrics & Progress | 4 | 14 | 8% |
 | E6: OKR Rituals | 4 | 13 | 7% |
-| **Total** | **39** | **194** | |
+| **Total** | **36** | **184** | |
+
+> Epic E2 (Admin & Master Data) is handled entirely by power1Admin.
 
 ---
 
@@ -47,10 +50,7 @@
 | US-005 | Build sidebar navigation | 5 | P1/Must | E1 | US-004 |
 | US-006 | Implement user context | 3 | P1/Must | E1 | US-004 |
 | US-007 | Build section routing | 8 | P1/Must | E1 | US-005, US-006 |
-| US-008 | Organizational unit management | 5 | P1/Must | E2 | US-007 |
-| US-009 | Sprint management | 5 | P1/Must | E2 | US-007 |
-| US-010 | User-OrgUnit assignment | 3 | P1/Must | E2 | US-008 |
-| US-011 | OKR list view | 8 | P1/Must | E3 | US-007, US-008, US-009 |
+| US-011 | OKR list view | 8 | P1/Must | E3 | US-007 * |
 | US-012 | Objective create/edit form | 8 | P1/Must | E3 | US-011 |
 | US-013 | Key Result create/edit form | 8 | P1/Must | E3 | US-012 |
 | US-014 | Metric definition on Key Results | 5 | P1/Must | E3 | US-013 |
@@ -73,41 +73,54 @@
 | US-031 | Metric value update | 5 | P1/Must | E5 | US-030 |
 | US-032 | Progress calculation & display | 3 | P1/Must | E5 | US-031 |
 | US-033 | Metric update history | 3 | P2/Should | E5 | US-031 |
-| US-034 | Rituals dashboard | 3 | P1/Must | E6 | US-007, US-009 |
+| US-034 | Rituals dashboard | 3 | P1/Must | E6 | US-007 * |
 | US-035 | Ritual create/edit form | 3 | P1/Must | E6 | US-034 |
 | US-036 | Ritual facilitation view | 5 | P2/Should | E6 | US-035 |
 | US-037 | Past rituals list | 2 | P3/Could | E6 | US-035 |
 | US-038 | Responsive layout | 8 | P3/Could | E1 | US-007 |
 | US-039 | Dark mode support | 3 | P3/Could | E1 | US-007 |
 
+> \* **Cross-project data dependency**: US-011 and US-034 read org unit and sprint data from Dataverse. This data is managed by power1Admin. For development, sample data must be entered via the Model-Driven App or direct Dataverse import before these stories can be tested.
+
 ---
 
 ## Sprint Planning Suggestion
 
-> 1-week sprints at 10-12 points/sprint velocity
+> 1-week sprints at 10–12 points/sprint velocity
 
 | Sprint | Stories | Points | Focus |
 |--------|---------|--------|-------|
 | **Sprint 1** | US-001, US-002 | 13 | Foundation: Dataverse schema + security roles |
-| **Sprint 2** | US-004, US-003 | 13 | Canvas App project + ALM pipeline |
+| **Sprint 2** | US-004, US-003 | 13 | Foundation: Canvas App project + ALM pipeline |
 | **Sprint 3** | US-005, US-006 | 8 | Shell: sidebar navigation + user context |
 | **Sprint 4** | US-007 | 8 | Shell: section routing + deep linking |
-| **Sprint 5** | US-008, US-009 | 10 | Admin: org unit + sprint management |
-| **Sprint 6** | US-010, US-011 | 11 | Admin: user-orgunit + OKR list view |
-| **Sprint 7** | US-012, US-024 | 11 | OKR: Objective CRUD + sprint/program assign |
-| **Sprint 8** | US-013 | 8 | OKR: Key Result CRUD |
-| **Sprint 9** | US-014, US-023 | 10 | OKR: metric definition + task management |
-| **Sprint 10** | US-015, US-016 | 10 | OKR: lifecycle status + cascade linking |
-| **Sprint 11** | US-017, US-018 | 11 | OKR: filter bar + pre-set filters |
-| **Sprint 12** | US-019, US-020 | 13 | OKR: saved filters + view modes |
-| **Sprint 13** | US-025, US-026 | 10 | Programs: dashboard + CRUD form |
-| **Sprint 14** | US-027, US-028, US-029 | 13 | Programs: detail view + rollup + activity feed |
-| **Sprint 15** | US-030, US-031 | 8 | Metrics: KR list + value update |
-| **Sprint 16** | US-032, US-033 | 6 | Metrics: progress display + update history |
-| **Sprint 17** | US-034, US-035 | 6 | Rituals: dashboard + CRUD form |
-| **Sprint 18** | US-036, US-037 | 7 | Rituals: facilitation view + past rituals |
-| **Sprint 19** | US-021, US-022 | 10 | Polish: breadcrumbs + cascade navigation |
-| **Sprint 20** | US-038, US-039 | 11 | Polish: responsive layout + dark mode |
+| **Sprint 5** | US-011 | 8 | OKR: list view with expandable Key Results |
+| **Sprint 6** | US-012, US-024 | 11 | OKR: Objective CRUD + sprint/program assign |
+| **Sprint 7** | US-013 | 8 | OKR: Key Result CRUD |
+| **Sprint 8** | US-014, US-023 | 10 | OKR: metric definition + task management |
+| **Sprint 9** | US-015, US-016 | 10 | OKR: lifecycle status + cascade linking |
+| **Sprint 10** | US-017, US-018 | 11 | OKR: filter bar + pre-set filters |
+| **Sprint 11** | US-019, US-020 | 13 | OKR: saved filters + view modes |
+| **Sprint 12** | US-025, US-026 | 10 | Programs: dashboard + CRUD form |
+| **Sprint 13** | US-027, US-028 | 10 | Programs: detail view + progress rollup |
+| **Sprint 14** | US-030, US-031 | 8 | Metrics: KR list + value update |
+| **Sprint 15** | US-029, US-032, US-033 | 9 | Programs activity + progress display + history |
+| **Sprint 16** | US-034, US-035, US-036 | 11 | Rituals: dashboard + CRUD + facilitation |
+| **Sprint 17** | US-037, US-021, US-022 | 12 | Past rituals + breadcrumbs + cascade nav |
+| **Sprint 18** | US-038, US-039 | 11 | Polish: responsive layout + dark mode |
+
+**Total**: 184 points over 18 sprints.
+
+### MVP Cut (P1 Only)
+
+For a faster first release, deliver only Must Have (P1) stories:
+
+| Metric | Value |
+|--------|-------|
+| Stories | 24 |
+| Points | 127 |
+| Sprints | 11–13 |
+| Excluded | US-003, US-019, US-020, US-021, US-022, US-028, US-029, US-033, US-036, US-037, US-038, US-039 |
 
 ---
 
@@ -125,13 +138,7 @@ graph TD
     US005 --> US007[US-007: Section Routing]
     US006 --> US007
 
-    US007 --> US008[US-008: OrgUnit Mgmt]
-    US007 --> US009[US-009: Sprint Mgmt]
-    US008 --> US010[US-010: User-OrgUnit]
-
     US007 --> US011[US-011: OKR List View]
-    US008 --> US011
-    US009 --> US011
 
     US011 --> US012[US-012: Objective CRUD]
     US012 --> US013[US-013: Key Result CRUD]
@@ -170,13 +177,17 @@ graph TD
     US031 --> US033[US-033: Update History]
 
     US007 --> US034[US-034: Rituals Dashboard]
-    US009 --> US034
     US034 --> US035[US-035: Ritual CRUD]
     US035 --> US036[US-036: Facilitation View]
     US035 --> US037[US-037: Past Rituals]
 
     US007 --> US038[US-038: Responsive Layout]
     US007 --> US039[US-039: Dark Mode]
+
+    MDA[power1Admin MDA]:::mda -.->|data| US011
+    MDA -.->|data| US034
+
+    classDef mda fill:#dbeafe,stroke:#3b82f6
 ```
 
 ---
@@ -190,10 +201,9 @@ graph TD
 | **Data model** | 11 custom tables, 4 N:N relationships, self-referential lookups | Complex (3/3) |
 | **Business logic** | Status transitions, cascade validation, progress rollup | Medium-High (2.5/3) |
 | **Integrations** | Dataverse only, no external connectors needed | Low (1/3) |
-| **UI complexity** | 15+ screens, responsive, three view modes, hierarchy visualization | Complex (3/3) |
+| **UI complexity** | 15+ screens, three view modes, hierarchy visualization | Complex (3/3) |
 | **Security model** | 5 roles with row-level ownership patterns | Medium (2/3) |
-| **Environment** | Dev/Test/Prod ALM pipeline | Medium (2/3) |
-| **Complexity Score** | **13.5/18** | **Complex** |
+| **Admin screens** | Moved to Model-Driven App — reduced from Canvas App scope | **Reduced** |
 
 ### Key Canvas App Risks
 
