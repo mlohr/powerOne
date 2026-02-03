@@ -1,0 +1,305 @@
+{
+  "_meta": {
+    "models": {
+      "programs": "Cross-entity strategic initiatives that connect to multiple Objectives, providing visibility for work that spans teams, departments, and entities.",
+      "programLeads": "Users responsible for leading a Program. A program can have one or more co-leads.",
+      "activityUpdates": "Recent changes and updates related to programs, displayed in the activity feed on the detailed program view.",
+      "linkedObjectives": "Objectives that are assigned to a program. Programs track rolled-up progress from these objectives."
+    },
+    "relationships": [
+      "Each Program has one or more ProgramLeads (Users who lead the initiative)",
+      "Each Program is assigned to multiple Objectives (cross-entity strategic work)",
+      "Each Program involves multiple OrganizationalUnits (cross-entity scope)",
+      "Progress percentage is calculated by averaging the progress of all linked Objectives",
+      "Each Program has an activity feed showing recent ActivityUpdates"
+    ]
+  },
+  "programs": [
+    {
+      "id": "prog-001",
+      "name": "Global Revenue Acceleration",
+      "description": "Strategic initiative to accelerate revenue growth across all entities and markets. Focus on enterprise customer acquisition, market expansion, and customer retention strategies.",
+      "leads": [
+        {
+          "userId": "user-001",
+          "name": "Sarah Chen",
+          "initials": "SC",
+          "email": "sarah.chen@powerone.com"
+        }
+      ],
+      "linkedObjectives": [
+        {
+          "id": "obj-001",
+          "title": "Increase company-wide revenue growth",
+          "organizationalUnit": "Group",
+          "progress": 65,
+          "owner": "Sarah Chen"
+        },
+        {
+          "id": "obj-002",
+          "title": "Scale Germany entity revenue to €20M",
+          "organizationalUnit": "Germany (Entity)",
+          "progress": 70,
+          "owner": "Marcus Weber"
+        },
+        {
+          "id": "obj-004",
+          "title": "Accelerate enterprise customer acquisition",
+          "organizationalUnit": "New Business Development (Domain)",
+          "progress": 80,
+          "owner": "Lisa Schneider"
+        }
+      ],
+      "overallProgress": 72,
+      "entitiesInvolved": ["Group", "Germany", "New Business Development"],
+      "activityUpdates": [
+        {
+          "id": "act-001",
+          "timestamp": "2026-01-03T14:30:00Z",
+          "type": "objective_added",
+          "user": "Sarah Chen",
+          "description": "Added objective 'Accelerate enterprise customer acquisition' to program"
+        },
+        {
+          "id": "act-002",
+          "timestamp": "2026-01-02T09:15:00Z",
+          "type": "progress_update",
+          "user": "System",
+          "description": "Overall progress increased from 68% to 72% based on linked objective updates"
+        },
+        {
+          "id": "act-003",
+          "timestamp": "2025-12-28T16:45:00Z",
+          "type": "program_edited",
+          "user": "Sarah Chen",
+          "description": "Updated program description to emphasize customer retention strategies"
+        }
+      ]
+    },
+    {
+      "id": "prog-002",
+      "name": "International Expansion",
+      "description": "Expand into new international markets with focus on Asia-Pacific. Build local teams, establish market presence, and acquire first customers in target regions.",
+      "leads": [
+        {
+          "userId": "user-004",
+          "name": "Priya Patel",
+          "initials": "PP",
+          "email": "priya.patel@powerone.com"
+        },
+        {
+          "userId": "user-001",
+          "name": "Sarah Chen",
+          "initials": "SC",
+          "email": "sarah.chen@powerone.com"
+        }
+      ],
+      "linkedObjectives": [
+        {
+          "id": "obj-003",
+          "title": "Launch operations in India",
+          "organizationalUnit": "India (Entity)",
+          "progress": 45,
+          "owner": "Priya Patel"
+        }
+      ],
+      "overallProgress": 45,
+      "entitiesInvolved": ["Group", "India"],
+      "activityUpdates": [
+        {
+          "id": "act-004",
+          "timestamp": "2026-01-04T11:20:00Z",
+          "type": "lead_added",
+          "user": "Priya Patel",
+          "description": "Added Sarah Chen as co-lead for the program"
+        },
+        {
+          "id": "act-005",
+          "timestamp": "2025-12-30T13:00:00Z",
+          "type": "progress_update",
+          "user": "System",
+          "description": "Overall progress increased from 38% to 45%"
+        }
+      ]
+    },
+    {
+      "id": "prog-003",
+      "name": "Digital Transformation",
+      "description": "Modernize technology stack and processes to improve efficiency and scalability. Automate manual workflows, upgrade infrastructure, and implement modern development practices.",
+      "leads": [
+        {
+          "userId": "user-006",
+          "name": "Tom Richter",
+          "initials": "TR",
+          "email": "tom.richter@powerone.com"
+        }
+      ],
+      "linkedObjectives": [
+        {
+          "id": "obj-005",
+          "title": "Enhance product quality and delivery speed",
+          "organizationalUnit": "Production (Domain)",
+          "progress": 55,
+          "owner": "Tom Richter"
+        },
+        {
+          "id": "obj-007",
+          "title": "Automate deployment pipeline",
+          "organizationalUnit": "Product Development (Department)",
+          "progress": 40,
+          "owner": "Raj Kumar"
+        }
+      ],
+      "overallProgress": 48,
+      "entitiesInvolved": ["Germany", "Production", "Product Development"],
+      "activityUpdates": [
+        {
+          "id": "act-006",
+          "timestamp": "2026-01-05T08:45:00Z",
+          "type": "program_created",
+          "user": "Tom Richter",
+          "description": "Created new program for digital transformation initiatives"
+        },
+        {
+          "id": "act-007",
+          "timestamp": "2026-01-05T09:30:00Z",
+          "type": "objective_added",
+          "user": "Tom Richter",
+          "description": "Added objective 'Enhance product quality and delivery speed'"
+        },
+        {
+          "id": "act-008",
+          "timestamp": "2026-01-05T09:32:00Z",
+          "type": "objective_added",
+          "user": "Tom Richter",
+          "description": "Added objective 'Automate deployment pipeline'"
+        }
+      ]
+    },
+    {
+      "id": "prog-004",
+      "name": "Customer Success Excellence",
+      "description": "Build world-class customer success capabilities to drive retention and expansion. Implement proactive support, customer health monitoring, and success planning processes.",
+      "leads": [
+        {
+          "userId": "user-010",
+          "name": "Michael Schmidt",
+          "initials": "MS",
+          "email": "michael.schmidt@powerone.com"
+        }
+      ],
+      "linkedObjectives": [],
+      "overallProgress": 0,
+      "entitiesInvolved": ["Germany", "After-/Sales"],
+      "activityUpdates": [
+        {
+          "id": "act-009",
+          "timestamp": "2026-01-04T15:00:00Z",
+          "type": "program_created",
+          "user": "Michael Schmidt",
+          "description": "Created new program - no objectives assigned yet"
+        }
+      ]
+    },
+    {
+      "id": "prog-005",
+      "name": "Talent Development & Culture",
+      "description": "Invest in employee growth, leadership development, and organizational culture. Create pathways for career progression, strengthen our values, and build high-performing teams across all entities.",
+      "leads": [
+        {
+          "userId": "user-011",
+          "name": "Emma Johnson",
+          "initials": "EJ",
+          "email": "emma.johnson@powerone.com"
+        },
+        {
+          "userId": "user-012",
+          "name": "David Lee",
+          "initials": "DL",
+          "email": "david.lee@powerone.com"
+        }
+      ],
+      "linkedObjectives": [
+        {
+          "id": "obj-006",
+          "title": "Build a high-performing enterprise sales team",
+          "organizationalUnit": "Enterprise Sales (Department)",
+          "progress": 70,
+          "owner": "Anna Koch"
+        }
+      ],
+      "overallProgress": 70,
+      "entitiesInvolved": ["Group", "Germany", "India", "Portugal"],
+      "activityUpdates": [
+        {
+          "id": "act-010",
+          "timestamp": "2026-01-03T10:15:00Z",
+          "type": "program_edited",
+          "user": "Emma Johnson",
+          "description": "Expanded entity scope to include Portugal"
+        },
+        {
+          "id": "act-011",
+          "timestamp": "2025-12-29T14:20:00Z",
+          "type": "objective_added",
+          "user": "Emma Johnson",
+          "description": "Added objective 'Build a high-performing enterprise sales team'"
+        },
+        {
+          "id": "act-012",
+          "timestamp": "2025-12-28T11:00:00Z",
+          "type": "lead_added",
+          "user": "Emma Johnson",
+          "description": "Added David Lee as co-lead for the program"
+        }
+      ]
+    },
+    {
+      "id": "prog-006",
+      "name": "Product Innovation Lab",
+      "description": "Experimental initiative to explore emerging technologies and innovative product concepts. Fast-paced experimentation with AI/ML capabilities, new user experiences, and potential new product lines. This is a long-term strategic bet with higher risk but potentially transformative outcomes for the company.",
+      "leads": [
+        {
+          "userId": "user-008",
+          "name": "Raj Kumar",
+          "initials": "RK",
+          "email": "raj.kumar@powerone.com"
+        }
+      ],
+      "linkedObjectives": [
+        {
+          "id": "obj-005",
+          "title": "Enhance product quality and delivery speed",
+          "organizationalUnit": "Production (Domain)",
+          "progress": 55,
+          "owner": "Tom Richter"
+        },
+        {
+          "id": "obj-007",
+          "title": "Automate deployment pipeline",
+          "organizationalUnit": "Product Development (Department)",
+          "progress": 40,
+          "owner": "Raj Kumar"
+        }
+      ],
+      "overallProgress": 48,
+      "entitiesInvolved": ["Germany", "India", "Production"],
+      "activityUpdates": [
+        {
+          "id": "act-013",
+          "timestamp": "2026-01-05T16:30:00Z",
+          "type": "program_created",
+          "user": "Raj Kumar",
+          "description": "Created new experimental program for innovation initiatives"
+        },
+        {
+          "id": "act-014",
+          "timestamp": "2026-01-05T16:45:00Z",
+          "type": "objective_added",
+          "user": "Raj Kumar",
+          "description": "Linked existing objectives from Production domain"
+        }
+      ]
+    }
+  ]
+}
