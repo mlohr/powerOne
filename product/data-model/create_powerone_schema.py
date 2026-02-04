@@ -1,4 +1,8 @@
 """
+Dependencies:
+pip install PowerPlatform-Dataverse-Client
+pip install azure-identity
+
 PowerOne — Dataverse Schema Creation Script
 
 Creates the complete PowerOne data model in Microsoft Dataverse, organized
@@ -553,7 +557,7 @@ def create_many_to_many(headers, base_url, entity1, entity1_display,
 
 
 def create_global_optionset(headers, base_url, name, display_name, options):
-    """Create a global option set (Choice) via Web API."""
+    """Create a global option set (Choice) via Web API. Returns the MetadataId (GUID)."""
     payload = {
         "@odata.type": "Microsoft.Dynamics.CRM.OptionSetMetadata",
         "IsGlobal": True,
@@ -588,12 +592,17 @@ def create_global_optionset(headers, base_url, name, display_name, options):
         headers=headers,
     )
     raise_for_status(resp)
-    print(f"  + Global choice: {name} ({display_name}) — {len(options)} options")
+    # Extract GUID from OData-EntityId header:
+    # https://org.crm.dynamics.com/api/data/v9.2/GlobalOptionSetDefinitions(guid)
+    entity_id = resp.headers.get("OData-EntityId", "")
+    guid = entity_id.rstrip(")").rsplit("(", 1)[-1] if "(" in entity_id else ""
+    print(f"  + Global choice: {name} ({display_name}) — {len(options)} options  [{guid}]")
+    return guid
 
 
 def create_choice_column(headers, base_url, table_logical, column_schema, column_display,
-                         global_choice_name, required=False):
-    """Create a picklist column referencing a global option set via Web API."""
+                         global_choice_guid, required=False):
+    """Create a picklist column referencing a global option set by GUID via Web API."""
     payload = {
         "@odata.type": "Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
         "SchemaName": column_schema,
@@ -610,7 +619,7 @@ def create_choice_column(headers, base_url, table_logical, column_schema, column
             "CanBeChanged": True,
             "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings",
         },
-        "GlobalOptionSet@odata.bind": f"/GlobalOptionSetDefinitions(Name='{global_choice_name.lower()}')",
+        "GlobalOptionSet@odata.bind": f"/GlobalOptionSetDefinitions({global_choice_guid})",
     }
     resp = requests.post(
         f"{base_url}/api/data/{API_VERSION}/EntityDefinitions(LogicalName='{table_logical}')/Attributes",
@@ -618,7 +627,7 @@ def create_choice_column(headers, base_url, table_logical, column_schema, column
         headers=headers,
     )
     raise_for_status(resp)
-    print(f"  + Choice column: {table_logical}.{column_schema} → {global_choice_name}")
+    print(f"  + Choice column: {table_logical}.{column_schema} → {global_choice_guid}")
 
 
 def set_table_display_name(headers, base_url, table_logical_name, display_name, plural_display_name):
@@ -701,13 +710,16 @@ def main():
 
     headers = get_web_api_headers(credential, ENV_URL)
 
+    # Map choice name → GUID (needed for Phase 5b to bind columns to option sets)
+    choice_guids = {}
     for choice in GLOBAL_CHOICES:
-        with_retry(
+        guid = with_retry(
             lambda c=choice: create_global_optionset(
                 headers, ENV_URL, c["name"], c["display"], c["options"]
             ),
             f"Global choice {choice['name']}",
         )
+        choice_guids[choice["name"]] = guid
         time.sleep(0.5)
 
     print()
@@ -875,9 +887,10 @@ def main():
     headers = get_web_api_headers(credential, ENV_URL)
 
     for table_schema, col_schema, col_display, choice_name, required in CHOICE_COLUMNS:
+        guid = choice_guids[choice_name]
         with_retry(
-            lambda t=table_schema, c=col_schema, d=col_display, ch=choice_name, r=required:
-                create_choice_column(headers, ENV_URL, ln(t), c, d, ch, r),
+            lambda t=table_schema, c=col_schema, d=col_display, g=guid, r=required:
+                create_choice_column(headers, ENV_URL, ln(t), c, d, g, r),
             f"Choice {col_schema} on {table_schema}",
         )
         time.sleep(0.5)
