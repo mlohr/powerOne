@@ -14,6 +14,7 @@ in dependency-ordered phases:
   Phase 3: OKR detail tables (depend on Phase 2)
   Phase 4: Programs & process tables (depend on Phase 1)
   Phase 5: User feature tables (depend on Phase 1)
+  Phase 5a: Add SDK-created tables to solution (if POWERONE_SOLUTION is set)
   Phase 5b: Choice columns referencing global option sets (tables must exist)
   Phase 6: Display names via Web API (clean names without publisher prefix)
   Phase 7: Memo columns via Web API (tables must exist)
@@ -29,8 +30,9 @@ Usage:
     python create_powerone_schema.py
 
     Set environment variables before running:
-        POWERONE_ENV_URL  — Dataverse environment URL (required)
-        POWERONE_PREFIX   — Publisher prefix (default: "po")
+        POWERONE_ENV_URL      — Dataverse environment URL (required)
+        POWERONE_PREFIX       — Publisher prefix (default: "po")
+        POWERONE_SOLUTION     — Solution unique name (optional — if set, all components are added to this solution)
 """
 
 import os
@@ -50,6 +52,7 @@ from PowerPlatform.Dataverse.core.config import DataverseConfig
 
 ENV_URL = os.environ.get("POWERONE_ENV_URL", "https://<your-org>.crm.dynamics.com").rstrip("/")
 PREFIX = os.environ.get("POWERONE_PREFIX", "po")
+SOLUTION_NAME = os.environ.get("POWERONE_SOLUTION", "")
 API_VERSION = "v9.2"
 
 if "<your-org>" in ENV_URL:
@@ -380,13 +383,16 @@ def phase_header(num, title, description):
 def get_web_api_headers(credential, base_url):
     """Get authenticated headers for Web API calls."""
     token = credential.get_token(f"{base_url}/.default")
-    return {
+    headers = {
         "Authorization": f"Bearer {token.token}",
         "Content-Type": "application/json; charset=utf-8",
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
         "Accept": "application/json",
     }
+    if SOLUTION_NAME:
+        headers["MSCRM.SolutionUniqueName"] = SOLUTION_NAME
+    return headers
 
 
 def create_memo_column(headers, base_url, table_logical_name, schema_name, display_name, max_length=2000):
@@ -641,6 +647,22 @@ def get_entity_metadata_id(headers, base_url, table_logical_name):
     return resp.json()["MetadataId"]
 
 
+def add_to_solution(headers, base_url, component_id, component_type, solution_name):
+    """Add an existing component to a solution via AddSolutionComponent action."""
+    payload = {
+        "ComponentId": component_id,
+        "ComponentType": component_type,
+        "SolutionUniqueName": solution_name,
+        "AddRequiredComponents": False,
+    }
+    resp = requests.post(
+        f"{base_url}/api/data/{API_VERSION}/AddSolutionComponent",
+        json=payload,
+        headers=headers,
+    )
+    raise_for_status(resp)
+
+
 def get_attribute_metadata_id(headers, base_url, table_logical_name, column_logical_name):
     """Retrieve the MetadataId (GUID) for a column by logical name."""
     resp = requests.get(
@@ -714,6 +736,7 @@ def main():
     print("PowerOne — Dataverse Schema Creation")
     print(f"Environment: {ENV_URL}")
     print(f"Prefix:      {P}_")
+    print(f"Solution:    {SOLUTION_NAME or '(none — components go to default solution)'}")
     print()
 
     # ── Authenticate ────────────────────────────────────────────────────
@@ -902,6 +925,34 @@ def main():
         primary_column_schema_name=f"{P}_Name",
     ), "po_SavedFilter")
     print("  Created.\n")
+
+    # ====================================================================
+    # PHASE 5a: Add SDK-created Tables to Solution (if solution specified)
+    # ====================================================================
+    # The SDK create_table() doesn't support solution association, so we
+    # add the 11 tables to the solution after creation via AddSolutionComponent.
+    # Web API components (choices, columns, relationships) are added automatically
+    # via the MSCRM.SolutionUniqueName header.
+
+    if SOLUTION_NAME:
+        phase_header("5a", "ADD TABLES TO SOLUTION",
+                     f"Adding 11 tables to solution '{SOLUTION_NAME}'")
+
+        headers = get_web_api_headers(credential, ENV_URL)
+
+        all_tables = list(TABLE_DISPLAY_NAMES.keys())
+        for table_schema in all_tables:
+            metadata_id = get_entity_metadata_id(headers, ENV_URL, ln(table_schema))
+            with_retry(
+                lambda mid=metadata_id: add_to_solution(
+                    headers, ENV_URL, mid, 1, SOLUTION_NAME  # ComponentType 1 = Entity
+                ),
+                f"Add {table_schema} to solution",
+            )
+            print(f"  + {table_schema} → {SOLUTION_NAME}")
+            time.sleep(0.5)
+
+        print()
 
     # ====================================================================
     # PHASE 5b: Choice Columns (Web API — tables + global choices must exist)
@@ -1239,6 +1290,7 @@ Summary:
   Memo columns added:       4
   1:N relationships:        16
   N:N relationships:        4
+  Solution:                 {SOLUTION_NAME or '(default)'}
 
 Verify in Power Apps:
   https://make.powerapps.com → Tables → filter by "{P}_"
