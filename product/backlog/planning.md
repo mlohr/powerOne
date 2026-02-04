@@ -1,6 +1,6 @@
 # PowerOne — Implementation Planning
 
-> **Two workstreams** delivering an OKR management platform on Microsoft Power Platform.
+> **Three workstreams** delivering an OKR management platform on Microsoft Power Platform.
 > Sprint cadence: 1-week sprints across all scenarios.
 > **MVP-first delivery**: all P1/Must Have stories are completed before P2/P3 work begins.
 
@@ -10,36 +10,51 @@
 
 | Workstream | App Type | Stories | Points | Description |
 |------------|----------|---------|--------|-------------|
-| **powerOne** | Canvas App | 36 | 184 | Main user-facing OKR application |
-| **power1Admin** | Model-Driven App | 6 | 15 | Admin interface for master data management |
-| **Total** | | **42** | **199** | |
+| **powerOne** | Canvas App (Dataverse) | 36 | 184 | Main user-facing OKR application (CRUD) |
+| **power1Admin** | Model-Driven App (Dataverse) | 6 | 15 | Admin interface for master data management |
+| **power1Browse** | Canvas App (SharePoint) | 18 | 79 | Read-only OKR browser for 500+ users |
+| **Total** | | **60** | **278** | |
 
 ### Delivery Phases
 
-| Phase | Scope | powerOne | power1Admin | Combined |
-|-------|-------|----------|-------------|----------|
-| **MVP** (P1/Must Have) | Core product | 24 stories, 127 pts | 6 stories, 15 pts | 30 stories, 142 pts |
-| **Enhancements** (P2/Should Have) | Advanced features | 8 stories, 41 pts | — | 8 stories, 41 pts |
-| **Polish** (P3/Could Have) | Nice-to-haves | 4 stories, 16 pts | — | 4 stories, 16 pts |
+| Phase | Scope | powerOne | power1Admin | power1Browse | Combined |
+|-------|-------|----------|-------------|-------------|----------|
+| **MVP** (P1/Must Have) | Core product | 24 stories, 127 pts | 6 stories, 15 pts | 12 stories, 49 pts | 42 stories, 191 pts |
+| **Enhancements** (P2/Should Have) | Advanced features | 8 stories, 41 pts | — | 5 stories, 26 pts | 13 stories, 67 pts |
+| **Polish** (P3/Could Have) | Nice-to-haves | 4 stories, 16 pts | — | 1 story, 4 pts | 5 stories, 20 pts |
 
 ### Shared Foundation
 
-Both apps share the same Dataverse environment and solution:
+All three apps share the same Dataverse environment and solution:
 
-- **Dataverse schema** (US-001): single deployment, used by both apps
-- **Security roles** (US-002): shared role definitions, applied to both apps
-- **ALM pipeline** (US-003): single solution containing both apps
+- **Dataverse schema** (US-001): single deployment, used by all apps
+- **Security roles** (US-002): shared role definitions, applied to powerOne and power1Admin
+- **ALM pipeline** (US-003): single solution containing all apps
 - **Publisher prefix**: `po_` across all components
+- **SharePoint sync** (BS-002): Power Automate replicates Dataverse data to SharePoint Lists for power1Browse
 
-### Why Two Apps?
+### Why Three Apps?
 
-| Concern | Canvas App (powerOne) | Model-Driven App (power1Admin) |
-|---------|----------------------|-------------------------------|
-| **Users** | All team members | Administrators only |
-| **Purpose** | OKR browsing, updating, tracking | Org structure, sprints, user assignments |
-| **Frequency** | Daily use | Infrequent setup/maintenance |
-| **UI needs** | Custom UX, filtering, hierarchy views | Standard CRUD forms and views |
-| **Effort** | High (custom development) | Low (configuration-based) |
+| Concern | powerOne (Canvas App) | power1Admin (Model-Driven) | power1Browse (Canvas App) |
+|---------|----------------------|---------------------------|--------------------------|
+| **Users** | ~30 power users | Administrators only | 500+ read-only viewers |
+| **Purpose** | OKR CRUD, metric updates, full management | Org structure, sprints, user assignments | Read-only OKR browsing |
+| **Data source** | Dataverse (premium connector) | Dataverse (premium connector) | SharePoint Lists (standard connector) |
+| **License** | Power Apps Premium ($20/user/month) | Power Apps Premium ($20/user/month) | M365 E3/E5 (included, $0 extra) |
+| **Frequency** | Daily use | Infrequent setup/maintenance | Daily use |
+| **Effort** | High (custom development) | Low (configuration-based) | Medium (standard connector + sync) |
+
+### Licensing Strategy
+
+| Scenario | Monthly Cost | Annual Cost |
+|----------|-------------|-------------|
+| All 530 users on Power Apps Premium | $10,600 | $127,200 |
+| **Hybrid: 30 Premium + 500 M365 + 1 sync flow** | **$615** | **$7,380** |
+| **Annual savings** | | **$119,820** |
+
+The hybrid approach uses SharePoint Lists as a **read replica** of Dataverse. A single Power Automate flow (requiring 1 Premium license at $15/month) syncs data from Dataverse to SharePoint in near real-time. The power1Browse Canvas App reads only from SharePoint using the standard connector, which is included in M365 E3/E5 at no additional cost.
+
+**Critical rule**: power1Browse must use **only standard connectors** (SharePoint, Office 365 Users). Adding even one premium connector triggers premium licensing for all 500+ users.
 
 ---
 
@@ -353,13 +368,23 @@ Scenario 2 costs ~7% more total but delivers MVP ~2 weeks faster. Cost-to-MVP is
 5. **Weekly sync on solution merges** — export/import managed solutions carefully
 6. **MVP convergence at Sprint 12** — both tracks should have all P1 stories done; Sprint 12 is buffer/stabilization
 
+### For power1Browse
+
+1. **Start after powerOne Sprint 2** — Dataverse schema must be deployed and populated before sync flows have data to work with
+2. **Can be developed in parallel** with powerOne by a second developer — no code dependencies, only data dependencies
+3. **Sync flows first** (Sprint 1) — validate the data pipeline before building the Canvas App
+4. **Verify license designation** — check that the Canvas App shows "Standard" designation in Power Apps admin before distributing to 500+ users
+5. **Never add premium connectors** — this is the single most critical rule; adding Dataverse, SQL, or custom connectors triggers $20/user/month for all users
+6. **MVP at Sprint 6** (9 weeks from power1Browse start) — 12 stories deliver full read-only OKR + Programs browsing
+
 ### General
 
-- **Sprint 0** (pre-development): Provision environments, procure licenses, set up source control
+- **Sprint 0** (pre-development): Provision environments, procure licenses, set up source control, provision SharePoint site for power1Browse
 - **Build power1Admin early** in both scenarios — it unblocks admin data entry and validates the Dataverse schema
 - **Use the backlog CSV files** for import into Azure DevOps or Jira for sprint tracking (includes Phase and Components columns)
 - **Review velocity after Sprint 3** and adjust forecasts — initial sprints are often slower due to environment setup
 - **Component library review at Sprint 6** — validate that primitives and composites (`po_ObjectiveCard`, `po_KeyResultCard`) work across sections before remote dev starts using them
+- **License audit before go-live** — verify powerOne users have Power Apps Premium, power1Browse users have M365 E3/E5, sync flow owner has Power Automate Premium
 
 ---
 
@@ -367,5 +392,7 @@ Scenario 2 costs ~7% more total but delivers MVP ~2 weeks faster. Cost-to-MVP is
 
 - [powerOne Backlog (Canvas App)](powerOne/backlog.md) — 36 stories, 184 pts, component matrix, MVP-first sprint plan
 - [power1Admin Backlog (Model-Driven App)](power1Admin/backlog.md) — 6 stories, 15 pts
+- [power1Browse Backlog (Read-Only Browser)](power1Browse/backlog.md) — 18 stories, 79 pts, SharePoint data model, sync architecture
 - [powerOne Story Cards](powerOne/stories.md) — detailed acceptance criteria with component build/reuse notes
 - [power1Admin Story Cards](power1Admin/stories.md) — detailed acceptance criteria
+- [power1Browse Story Cards](power1Browse/stories.md) — detailed acceptance criteria with delegation notes
