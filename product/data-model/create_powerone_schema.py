@@ -1219,15 +1219,17 @@ Next steps:
 # =============================================================================
 
 def rollback():
-    """Delete all PowerOne custom tables. USE WITH EXTREME CAUTION."""
-    print("ROLLBACK — Deleting all PowerOne tables")
+    """Delete all PowerOne custom tables and global choices. USE WITH EXTREME CAUTION."""
+    print("ROLLBACK — Deleting all PowerOne tables and global choices")
     print("This is IRREVERSIBLE and deletes ALL data.\n")
 
     credential = InteractiveBrowserCredential()
     config = DataverseConfig()
     client = DataverseClient(base_url=ENV_URL, credential=credential, config=config)
+    headers = get_web_api_headers(credential, ENV_URL)
 
-    # Delete in reverse dependency order (children first)
+    # Delete tables in reverse dependency order (children first)
+    print("Deleting tables...")
     tables_to_delete = [
         f"{P}_ActivityUpdate",
         f"{P}_SavedFilter",
@@ -1248,6 +1250,20 @@ def rollback():
             print(f"  Deleted: {table}")
         except Exception as e:
             print(f"  Skip (may not exist): {table} — {e}")
+
+    # Delete global choices (must happen after tables that reference them)
+    print("\nDeleting global choices...")
+    for choice in GLOBAL_CHOICES:
+        name = choice["name"].lower()
+        try:
+            resp = requests.delete(
+                f"{ENV_URL}/api/data/{API_VERSION}/GlobalOptionSetDefinitions(Name='{name}')",
+                headers=headers,
+            )
+            raise_for_status(resp)
+            print(f"  Deleted: {choice['name']}")
+        except Exception as e:
+            print(f"  Skip (may not exist): {choice['name']} — {e}")
 
     print("\nRollback complete.")
 
