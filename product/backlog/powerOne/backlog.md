@@ -40,11 +40,11 @@
 
 ## Component Library Strategy
 
-The Canvas App uses a **Canvas Component Library** (`po_ComponentLibrary`) to build reusable UI elements. Components are organized in two tiers: **primitive components** (single-purpose UI elements) and **composite components** (domain-specific assemblies that compose primitives). Components are created during the first story that needs them and reused by subsequent stories, reducing effort and ensuring visual consistency.
+The Canvas App uses a **Canvas Component Library** (`po_ComponentLibrary`) to build 12 reusable UI elements. Each component is a flat, self-contained unit built from standard controls — Canvas Apps do not support nesting components inside other components. Components are created during the first story that needs them and reused by subsequent stories, reducing effort and ensuring visual consistency.
+
+> **Platform constraint**: `po_ObjectiveCard` and `po_KeyResultCard` internally rebuild status badge, progress bar, and avatar patterns using standard controls rather than referencing other components. Visual changes to these patterns must be updated in each component that uses them. Mitigate by documenting a shared color/sizing convention.
 
 ### Component Matrix
-
-#### Primitive Components
 
 | Component | Built In | Reused In | Description |
 |-----------|----------|-----------|-------------|
@@ -58,13 +58,8 @@ The Canvas App uses a **Canvas Component Library** (`po_ComponentLibrary`) to bu
 | `po_FilterChip` | US-017 | US-025, US-034 | Active filter pill with remove button |
 | `po_SearchableDropdown` | US-017 | US-012, US-013, US-026 | ComboBox wrapper with search and multi-select |
 | `po_CardContainer` | US-025 | US-027, US-034 | Consistent card wrapper for dashboards |
-
-#### Composite Components
-
-| Component | Built In | Reused In | Composes | Description |
-|-----------|----------|-----------|----------|-------------|
-| `po_ObjectiveCard` | US-011 | US-020, US-022, US-027 | StatusBadge, ProgressIndicator, UserAvatar | Objective row with status, progress, owner, sprint, program tags, cascade indicators, expand/collapse for child KRs |
-| `po_KeyResultCard` | US-011 | US-020, US-022, US-030 | StatusBadge, ProgressIndicator | Key Result row with status, progress, metric summary, task count, cascade link indicator |
+| `po_ObjectiveCard` | US-011 | US-020, US-022, US-027 | Objective row with status, progress, owner, expand/collapse for child KRs |
+| `po_KeyResultCard` | US-011 | US-020, US-022, US-030 | Key Result row with status, progress, metric summary, task count |
 
 ### Velocity Impact
 
@@ -147,7 +142,7 @@ The component library is created as part of US-004 (Canvas App project). All com
 | **Sprint 12** | US-027, US-034, US-035 | 11 | Program detail + Rituals dashboard & CRUD | Reuses: `po_ObjectiveCard`, `po_SidePanel`, `po_CardContainer` |
 | **Sprint 13** | US-030, US-031, US-032 | 11 | Metrics: KR list + value update + progress | Reuses: `po_KeyResultCard`, `po_EmptyState` |
 
-**MVP Milestone**: Sprint 13 — all Must Have features delivered. Product is usable for OKR management, program tracking, metric updates, and ritual scheduling. All 12 components established (10 primitives + 2 composites).
+**MVP Milestone**: Sprint 13 — all Must Have features delivered. Product is usable for OKR management, program tracking, metric updates, and ritual scheduling. All 12 components established.
 
 ### Phase 2 — Enhancements (P2 stories): 41 pts, 3 sprints
 
@@ -264,7 +259,7 @@ graph TD
 | **Integrations** | Dataverse only, no external connectors needed | Low (1/3) |
 | **UI complexity** | 15+ screens, three view modes, hierarchy visualization | Complex (3/3) |
 | **Security model** | 5 roles with row-level ownership patterns | Medium (2/3) |
-| **Component reuse** | 12 shared components (10 primitives + 2 composites) across 20+ stories | **Reduces effort in later sprints** |
+| **Component reuse** | 12 shared components across 20+ stories | **Reduces effort in later sprints** |
 
 ### Key Canvas App Risks
 

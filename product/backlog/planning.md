@@ -97,33 +97,26 @@ Plus cross-cutting: US-003 (ALM Pipeline, P2), US-038 (Responsive, P3), US-039 (
 
 ## Component Library Strategy
 
-The Canvas App builds a **Canvas Component Library** (`po_ComponentLibrary`) with 12 reusable components organized in two tiers: 10 primitive components (single-purpose UI elements) and 2 composite components (domain-specific assemblies that compose primitives). Components are created during their first use and reused by subsequent stories.
+The Canvas App builds a **Canvas Component Library** (`po_ComponentLibrary`) with 12 reusable components. Components are created during their first use and reused by subsequent stories. Each component is a flat, self-contained unit built from standard controls — Canvas Apps do not support nesting components inside other components.
 
-#### Primitive Components
+| Component | Built In | Reused In | Description | Impact |
+|-----------|----------|-----------|-------------|--------|
+| `po_SidePanel` | US-012 (S6) | US-013, US-014, US-026, US-035 | Slide-out panel for create/edit forms | 4 stories benefit |
+| `po_StatusBadge` | US-011 (S5) | US-012, US-015, US-025, US-030, US-034 | Color-coded lifecycle status label | 5 stories benefit |
+| `po_ProgressIndicator` | US-011 (S5) | US-025, US-027, US-030, US-032 | Progress bar with percentage and color coding | 4 stories benefit |
+| `po_SearchableDropdown` | US-017 (S10) | US-012, US-013, US-026 | Filterable dropdown for large option sets | 3 stories benefit |
+| `po_FilterChip` | US-017 (S10) | US-025, US-034 | Removable filter tag | 2 stories benefit |
+| `po_CardContainer` | US-025 (S11) | US-027, US-034 | Card layout wrapper with consistent padding/shadow | 2 stories benefit |
+| `po_EmptyState` | US-011 (S5) | US-025, US-030, US-034 | Placeholder for empty galleries | 3 stories benefit |
+| `po_ConfirmDialog` | US-015 (S9) | US-016, US-023 | Confirmation modal for destructive actions | 2 stories benefit |
+| `po_UserAvatar` | US-006 (S3) | US-011, US-023, US-030 | User photo/initials circle with name | 3 stories benefit |
+| `po_TaskItem` | US-023 (S8) | — | Checkbox + task title row | Standalone |
+| `po_ObjectiveCard` | US-011 (S5) | US-020, US-022, US-027 | Objective row with status, progress, owner, expand/collapse | 3 stories benefit |
+| `po_KeyResultCard` | US-011 (S5) | US-020, US-022, US-030 | Key Result row with status, progress, metric summary | 3 stories benefit |
 
-| Component | Built In | Reused In | Impact |
-|-----------|----------|-----------|--------|
-| `po_SidePanel` | US-012 (S6) | US-013, US-014, US-026, US-035 | 4 stories benefit |
-| `po_StatusBadge` | US-011 (S5) | US-012, US-015, US-025, US-030, US-034 | 5 stories benefit |
-| `po_ProgressIndicator` | US-011 (S5) | US-025, US-027, US-030, US-032 | 4 stories benefit |
-| `po_SearchableDropdown` | US-017 (S10) | US-012, US-013, US-026 | 3 stories benefit |
-| `po_FilterChip` | US-017 (S10) | US-025, US-034 | 2 stories benefit |
-| `po_CardContainer` | US-025 (S11) | US-027, US-034 | 2 stories benefit |
-| `po_EmptyState` | US-011 (S5) | US-025, US-030, US-034 | 3 stories benefit |
-| `po_ConfirmDialog` | US-015 (S9) | US-016, US-023 | 2 stories benefit |
-| `po_UserAvatar` | US-006 (S3) | US-011, US-023, US-030 | 3 stories benefit |
-| `po_TaskItem` | US-023 (S8) | — | Standalone |
+> **Platform constraint**: Canvas components cannot contain other canvas components. `po_ObjectiveCard` and `po_KeyResultCard` internally rebuild status badge, progress bar, and avatar patterns using standard controls rather than referencing `po_StatusBadge`, `po_ProgressIndicator`, or `po_UserAvatar`. This means visual changes to status badges or progress bars must be updated in multiple components. Mitigate by establishing a shared color/sizing convention documented in the component library.
 
-#### Composite Components
-
-| Component | Built In | Reused In | Composes | Impact |
-|-----------|----------|-----------|----------|--------|
-| `po_ObjectiveCard` | US-011 (S5) | US-020, US-022, US-027 | StatusBadge, ProgressIndicator, UserAvatar | 3 stories benefit |
-| `po_KeyResultCard` | US-011 (S5) | US-020, US-022, US-030 | StatusBadge, ProgressIndicator | 3 stories benefit |
-
-The composite components eliminate redundant re-implementation of Objective and Key Result display layouts across sections. Without them, US-020 (View Modes), US-022 (Cascade Navigation), US-027 (Program Detail), and US-030 (My KR List) would each independently rebuild the same row layout with status badges, progress indicators, and owner avatars.
-
-**Velocity impact**: After Sprint 5 (composite components built alongside primitives), effective velocity increases ~15–20% due to component reuse. This is reflected in the post-MVP phase velocities (12–14 pts/sprint vs 10–12).
+**Velocity impact**: After Sprint 5 (all 12 components built), effective velocity increases ~15–20% due to component reuse. This is reflected in the post-MVP phase velocities (12–14 pts/sprint vs 10–12).
 
 ---
 
@@ -406,7 +399,7 @@ Scenario 2 costs ~14% less total and delivers Browse ~3 weeks faster. Cost-to-MV
 1. **Phase 1 (MVP) complete before Phase 2 (Browse)** — ensures 250 power users have a working OKR platform before extending to 600 read-only viewers
 2. **MVP demo at Sprint 13–14** — stakeholders see the full core product before browse development begins
 3. **Phase 2 can be descoped** — if timelines tighten, the MVP is already deployed and usable for 250 users
-4. **Component library pays dividends** — by Sprint 5, the composite ObjectiveCard and KeyResultCard exist, accelerating all stories that display OKRs across sections
+4. **Component library pays dividends** — by Sprint 5, all 12 components exist, accelerating all stories that display OKRs across sections
 5. **power1Browse starts with sync validation** — build and test the Dataverse→SharePoint data pipeline before any Canvas App development
 
 ### For a Solo Developer (Scenario 1)
@@ -440,7 +433,7 @@ Scenario 2 costs ~14% less total and delivers Browse ~3 weeks faster. Cost-to-MV
 - **Build power1Admin early** in both scenarios — it unblocks admin data entry and validates the Dataverse schema
 - **Use the backlog CSV files** for import into Azure DevOps or Jira for sprint tracking (includes Phase and Components columns)
 - **Review velocity after Sprint 3** and adjust forecasts — initial sprints are often slower due to environment setup
-- **Component library review at Sprint 6** — validate that primitives and composites (`po_ObjectiveCard`, `po_KeyResultCard`) work across sections before remote dev starts using them
+- **Component library review at Sprint 6** — validate that all 12 components (`po_ObjectiveCard`, `po_KeyResultCard`, etc.) work across sections before remote dev starts using them
 - **License audit before go-live** — verify 255 powerOne/power1Admin users have Power Apps Premium (€6/user), 600 power1Browse users have M365 E3/E5, sync flow owner has Power Automate Premium (~€15/month)
 
 ---

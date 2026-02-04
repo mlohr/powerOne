@@ -10,8 +10,6 @@
 
 Stories that **build** a component invest extra effort to make it reusable. Stories that **reuse** a component benefit from reduced effort. See the [component matrix in backlog.md](backlog.md#component-matrix) for the full mapping.
 
-#### Primitive Components
-
 | Component | Built In | Type | Description |
 |-----------|----------|------|-------------|
 | `po_UserAvatar` | US-006 | Display | User initials/photo circle |
@@ -24,13 +22,10 @@ Stories that **build** a component invest extra effort to make it reusable. Stor
 | `po_FilterChip` | US-017 | Input | Active filter pill with remove |
 | `po_SearchableDropdown` | US-017 | Input | ComboBox with search + multi-select |
 | `po_CardContainer` | US-025 | Layout | Card wrapper for dashboards |
+| `po_ObjectiveCard` | US-011 | Display | Objective row with status, progress, owner, expand/collapse |
+| `po_KeyResultCard` | US-011 | Display | Key Result row with status, progress, metric summary, task count |
 
-#### Composite Components
-
-| Component | Built In | Composes | Description |
-|-----------|----------|----------|-------------|
-| `po_ObjectiveCard` | US-011 | StatusBadge, ProgressIndicator, UserAvatar | Objective row with status, progress, owner, sprint, program tags, cascade indicators, expand/collapse |
-| `po_KeyResultCard` | US-011 | StatusBadge, ProgressIndicator | Key Result row with status, progress, metric summary, task count, cascade link |
+> **Platform constraint**: Canvas components cannot contain other canvas components. `po_ObjectiveCard` and `po_KeyResultCard` internally rebuild status badge, progress bar, and avatar patterns using standard controls. Visual consistency is maintained via a shared color/sizing convention documented in the component library.
 
 ---
 
@@ -260,8 +255,8 @@ Stories that **build** a component invest extra effort to make it reusable. Stor
 - **Builds `po_EmptyState`**: Accepts an icon, title, and description. Displays centered placeholder when list has no items. Reused across all gallery/list views.
 
 **Composite components built:**
-- **Builds `po_ObjectiveCard`**: Composite component rendering a single Objective row. Composes `po_StatusBadge`, `po_ProgressIndicator`, and `po_UserAvatar`. Displays: title, org unit (with level badge), owner avatar+name, status badge, sprint label, progress indicator, KR count, program tags, cascade indicators ("↓ Cascades to..."). Supports expand/collapse to reveal child Key Results. Accepts an Objective record and expand state; emits onExpand, onEdit, onClick. Reused by US-020 (view modes with full/compact/hierarchy variants), US-022 (cascade navigation target highlighting), US-027 (linked objectives in program detail).
-- **Builds `po_KeyResultCard`**: Composite component rendering a single Key Result row within an expanded Objective. Composes `po_StatusBadge` and `po_ProgressIndicator`. Displays: title, status badge, progress percentage, metric count and summary (names + current/target), task count ("X open, Y completed"), cascade link indicator ("↑ Cascades from..."). Accepts a Key Result record; emits onEdit, onClick. Reused by US-020 (view modes), US-022 (cascade navigation), US-030 (My Key Results list).
+- **Builds `po_ObjectiveCard`**: Component rendering a single Objective row. Internally implements status badge, progress bar, and avatar patterns using standard controls. Displays: title, org unit (with level badge), owner avatar+name, status badge, sprint label, progress indicator, KR count, program tags, cascade indicators ("↓ Cascades to..."). Supports expand/collapse to reveal child Key Results. Accepts an Objective record and expand state; emits onExpand, onEdit, onClick. Reused by US-020 (view modes with full/compact/hierarchy variants), US-022 (cascade navigation target highlighting), US-027 (linked objectives in program detail).
+- **Builds `po_KeyResultCard`**: Component rendering a single Key Result row within an expanded Objective. Internally implements status badge and progress bar patterns using standard controls. Displays: title, status badge, progress percentage, metric count and summary (names + current/target), task count ("X open, Y completed"), cascade link indicator ("↑ Cascades from..."). Accepts a Key Result record; emits onEdit, onClick. Reused by US-020 (view modes), US-022 (cascade navigation), US-030 (My Key Results list).
 
 #### Power Platform Notes
 - Use nested Gallery or expandable container pattern for accordion
@@ -501,8 +496,8 @@ Stories that **build** a component invest extra effort to make it reusable. Stor
 - [ ] Data content is the same across modes, only layout changes
 
 #### Components
-- **Reuses `po_ObjectiveCard`**: All three view modes render objectives using the same composite component. Full view uses the default expanded layout. Compact view uses a condensed variant (truncated title, avatar-only owner, inline status). Hierarchy view uses the same card with calculated indentation per cascade level.
-- **Reuses `po_KeyResultCard`**: Each view mode renders Key Results using the same composite component with layout variants matching the objective cards.
+- **Reuses `po_ObjectiveCard`**: All three view modes render objectives using the same component. Full view uses the default expanded layout. Compact view uses a condensed variant (truncated title, avatar-only owner, inline status). Hierarchy view uses the same card with calculated indentation per cascade level.
+- **Reuses `po_KeyResultCard`**: Each view mode renders Key Results using the same component with layout variants matching the objective cards.
 
 #### Power Platform Notes
 - Use Visible property to toggle between three gallery/container templates
@@ -693,7 +688,7 @@ Stories that **build** a component invest extra effort to make it reusable. Stor
 - [ ] Empty state for programs with no linked objectives
 
 #### Components
-- **Reuses `po_ObjectiveCard`**: Linked objectives in the program detail are rendered using the same composite component, providing consistent layout with the OKR Hierarchy section. Displayed in a non-expandable variant (no child KR accordion) with progress bars and status badges.
+- **Reuses `po_ObjectiveCard`**: Linked objectives in the program detail are rendered using the same component, providing consistent layout with the OKR Hierarchy section. Displayed in a non-expandable variant (no child KR accordion) with progress bars and status badges.
 - **Reuses**: `po_ProgressIndicator` (program overall progress), `po_CardContainer` (program detail sections)
 
 #### Power Platform Notes
@@ -771,7 +766,7 @@ Stories that **build** a component invest extra effort to make it reusable. Stor
 - [ ] Loading indicator while data loads
 
 #### Components
-- **Reuses `po_KeyResultCard`**: Each Key Result in the list is rendered using the same composite component from US-011, providing consistent layout with the OKR Hierarchy section. Displays status, progress, metric summary, and task count per KR.
+- **Reuses `po_KeyResultCard`**: Each Key Result in the list is rendered using the same component from US-011, providing consistent layout with the OKR Hierarchy section. Displays status, progress, metric summary, and task count per KR.
 - **Reuses**: `po_EmptyState` ("No Key Results assigned to you this sprint")
 
 #### Power Platform Notes
