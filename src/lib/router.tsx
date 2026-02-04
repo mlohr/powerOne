@@ -49,4 +49,6 @@ export const router = createBrowserRouter([
     path: '/export',
     element: <ExportPage />,
   },
-])
+], {
+  basename: '/powerOne'
+})

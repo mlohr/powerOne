@@ -27,6 +27,14 @@ Each step is a conversation. The AI asks questions, you provide direction, and t
 
 Docs, installation, usage, & best practices 👉 [It's all here](https://buildermethods.com/design-os)
 
+### Windows Users (No Admin Rights)
+
+If you're on Windows and don't have administrator privileges, see **[WINDOWS-SETUP.md](WINDOWS-SETUP.md)** for detailed instructions on installing Node.js and running Design OS without admin access. We've also included helpful batch scripts (`install.bat`, `dev.bat`, etc.) to make common tasks easier.
+
+### Deploying to GitHub Pages
+
+To deploy your Design OS project to GitHub Pages, see **[DEPLOY-GITHUB-PAGES.md](DEPLOY-GITHUB-PAGES.md)** for step-by-step instructions on authentication setup and deployment options. Once configured, simply run `npm run deploy` to publish your site.
+
 ---
 
 ## Support, Training & Community
