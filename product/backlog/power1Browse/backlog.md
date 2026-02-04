@@ -22,7 +22,7 @@
 
 ### Purpose
 
-The power1Browse app is a **read-only Canvas App** that gives 500+ users the ability to browse OKRs, Programs, and metrics **without requiring Power Apps Premium licenses**. It achieves this by reading exclusively from SharePoint Lists (standard connector, included in M365 E3/E5).
+The power1Browse app is a **read-only Canvas App** that gives 600 users the ability to browse OKRs, Programs, and metrics **without requiring Power Apps Premium licenses**. It achieves this by reading exclusively from SharePoint Lists (standard connector, included in M365 E3/E5).
 
 ### Architecture
 
@@ -37,7 +37,7 @@ The power1Browse app is a **read-only Canvas App** that gives 500+ users the abi
 ┌──────┴──────────┐                              ┌────────┴──────────┐
 │ powerOne        │                              │ power1Browse      │
 │ Canvas App      │                              │ Canvas App        │
-│ ~30 power users │                              │ 500+ viewers      │
+│ 250 power users │                              │ 600 viewers      │
 │ Full CRUD       │                              │ Read-only         │
 └─────────────────┘                              └───────────────────┘
 ```
@@ -47,7 +47,7 @@ The power1Browse app is a **read-only Canvas App** that gives 500+ users the abi
 | Factor | Benefit |
 |--------|---------|
 | **Standard connector** | Included in Power Apps for M365 (no premium license) |
-| **M365 E3/E5 included** | 500+ users already have access |
+| **M365 E3/E5 included** | 600 users already have access |
 | **Familiar infrastructure** | SharePoint is already provisioned in the tenant |
 | **Delegation support** | Filter, Search, Sort, StartsWith are delegable |
 | **30M item capacity** | Lists can hold up to 30 million items |
@@ -57,11 +57,11 @@ The power1Browse app is a **read-only Canvas App** that gives 500+ users the abi
 
 | Scenario | Monthly Cost | Annual Cost |
 |----------|-------------|-------------|
-| All 530 users on Power Apps Premium ($20/user) | $10,600 | $127,200 |
-| **Hybrid: 30 Premium + 1 sync flow + 500 M365** | **$615** | **$7,380** |
-| **Savings** | **$9,985/month** | **$119,820/year** |
+| All 855 users on Power Apps Premium (€6/user) | €5,130 | €61,560 |
+| **Hybrid: 255 Premium + 1 sync flow + 600 M365** | **€1,545** | **€18,540** |
+| **Savings** | **€3,585/month** | **€43,020/year** |
 
-**Critical licensing rule**: The Canvas App must use **only standard connectors** (SharePoint, Office 365 Users). Adding even one premium connector triggers premium licensing for all users.
+**Critical licensing rule**: The Canvas App must use **only standard connectors** (SharePoint, Office 365 Users). Adding even one premium connector triggers €6/user/month for all 600 users.
 
 ---
 
@@ -114,7 +114,7 @@ The power1Browse app is a **read-only Canvas App** that gives 500+ users the abi
 | **Primary sync** | Event-triggered flow per table: "When a row is added, modified or deleted" (Dataverse) → Create/Update/Mark-deleted in SharePoint |
 | **Fallback sync** | Scheduled reconciliation every 4 hours: query Dataverse `modifiedon` → upsert to SharePoint |
 | **Latency** | Near real-time (seconds to minutes) for event-triggered; max 4 hours for missed events |
-| **License** | 1 × Power Automate Premium ($15/month) for flow owner, or 1 × Process license ($150/month) |
+| **License** | 1 × Power Automate Premium (~€15/month) for flow owner, or 1 × Process license (~€150/month) |
 | **Delete handling** | Set `IsDeleted = true` in SharePoint; Canvas App filters `IsDeleted = false` |
 
 ### Sync Flows

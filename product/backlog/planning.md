@@ -2,26 +2,28 @@
 
 > **Three workstreams** delivering an OKR management platform on Microsoft Power Platform.
 > Sprint cadence: 1-week sprints across all scenarios.
-> **MVP-first delivery**: all P1/Must Have stories are completed before P2/P3 work begins.
+> **Start date**: 2026-02-09
+> **MVP-first delivery**: all P1/Must Have stories are completed before Phase 2 work begins.
 
 ---
 
 ## Workstream Overview
 
-| Workstream | App Type | Stories | Points | Description |
-|------------|----------|---------|--------|-------------|
-| **powerOne** | Canvas App (Dataverse) | 36 | 184 | Main user-facing OKR application (CRUD) |
-| **power1Admin** | Model-Driven App (Dataverse) | 6 | 15 | Admin interface for master data management |
-| **power1Browse** | Canvas App (SharePoint) | 18 | 79 | Read-only OKR browser for 500+ users |
-| **Total** | | **60** | **278** | |
+| Workstream | App Type | Users | Stories | Points | Description |
+|------------|----------|-------|---------|--------|-------------|
+| **powerOne** | Canvas App (Dataverse) | 250 | 36 | 184 | Main user-facing OKR application (CRUD) |
+| **power1Admin** | Model-Driven App (Dataverse) | 5 | 6 | 15 | Admin interface for master data management |
+| **power1Browse** | Canvas App (SharePoint) | 600 | 18 | 79 | Read-only OKR browser (Phase 2) |
+| **Total** | | **855** | **60** | **278** | |
 
 ### Delivery Phases
 
-| Phase | Scope | powerOne | power1Admin | power1Browse | Combined |
-|-------|-------|----------|-------------|-------------|----------|
-| **MVP** (P1/Must Have) | Core product | 24 stories, 127 pts | 6 stories, 15 pts | 12 stories, 49 pts | 42 stories, 191 pts |
-| **Enhancements** (P2/Should Have) | Advanced features | 8 stories, 41 pts | — | 5 stories, 26 pts | 13 stories, 67 pts |
-| **Polish** (P3/Could Have) | Nice-to-haves | 4 stories, 16 pts | — | 1 story, 4 pts | 5 stories, 20 pts |
+| Phase | Scope | Workstreams | Stories | Points |
+|-------|-------|-------------|---------|--------|
+| **Phase 1 — MVP** | Core OKR management | powerOne (P1) + power1Admin | 30 stories | 142 pts |
+| **Phase 2 — Browse** | Read-only browser for all users | power1Browse (P1) | 12 stories | 49 pts |
+| **Phase 3 — Enhancements** | Advanced features | powerOne (P2) + power1Browse (P2) | 13 stories | 67 pts |
+| **Phase 4 — Polish** | Nice-to-haves | powerOne (P3) + power1Browse (P3) | 5 stories | 20 pts |
 
 ### Shared Foundation
 
@@ -37,10 +39,10 @@ All three apps share the same Dataverse environment and solution:
 
 | Concern | powerOne (Canvas App) | power1Admin (Model-Driven) | power1Browse (Canvas App) |
 |---------|----------------------|---------------------------|--------------------------|
-| **Users** | ~30 power users | Administrators only | 500+ read-only viewers |
+| **Users** | 250 | 5 | 600 |
 | **Purpose** | OKR CRUD, metric updates, full management | Org structure, sprints, user assignments | Read-only OKR browsing |
 | **Data source** | Dataverse (premium connector) | Dataverse (premium connector) | SharePoint Lists (standard connector) |
-| **License** | Power Apps Premium ($20/user/month) | Power Apps Premium ($20/user/month) | M365 E3/E5 (included, $0 extra) |
+| **License** | Power Apps Premium (€6/user/month) | Power Apps Premium (€6/user/month) | M365 E3/E5 (included, €0 extra) |
 | **Frequency** | Daily use | Infrequent setup/maintenance | Daily use |
 | **Effort** | High (custom development) | Low (configuration-based) | Medium (standard connector + sync) |
 
@@ -48,13 +50,48 @@ All three apps share the same Dataverse environment and solution:
 
 | Scenario | Monthly Cost | Annual Cost |
 |----------|-------------|-------------|
-| All 530 users on Power Apps Premium | $10,600 | $127,200 |
-| **Hybrid: 30 Premium + 500 M365 + 1 sync flow** | **$615** | **$7,380** |
-| **Annual savings** | | **$119,820** |
+| All 855 users on Power Apps Premium (€6/user) | €5,130 | €61,560 |
+| **Hybrid: 255 Premium + 600 M365 + 1 sync flow** | **€1,545** | **€18,540** |
+| **Annual savings** | | **€43,020** |
 
-The hybrid approach uses SharePoint Lists as a **read replica** of Dataverse. A single Power Automate flow (requiring 1 Premium license at $15/month) syncs data from Dataverse to SharePoint in near real-time. The power1Browse Canvas App reads only from SharePoint using the standard connector, which is included in M365 E3/E5 at no additional cost.
+The hybrid approach uses SharePoint Lists as a **read replica** of Dataverse. A single Power Automate flow (requiring 1 Premium license at ~€15/month) syncs data from Dataverse to SharePoint in near real-time. The power1Browse Canvas App reads only from SharePoint using the standard connector, which is included in M365 E3/E5 at no additional cost.
 
-**Critical rule**: power1Browse must use **only standard connectors** (SharePoint, Office 365 Users). Adding even one premium connector triggers premium licensing for all 500+ users.
+**Critical rule**: power1Browse must use **only standard connectors** (SharePoint, Office 365 Users). Adding even one premium connector triggers €6/user/month for all 600 users.
+
+---
+
+## Epic Overview
+
+### powerOne — Canvas App (36 stories, 184 pts)
+
+| Epic | Description | Stories | Points | Phase |
+|------|-------------|---------|--------|-------|
+| **E0: Foundation** | Dataverse schema, security roles, Canvas App project | 3 | 21 | MVP |
+| **E1: Shell** | Sidebar navigation, user context, section routing | 3 | 16 | MVP |
+| **E3: OKR Hierarchy** | OKR list, CRUD forms, metrics, tasks, filters, cascade | 14 | 74 | MVP (P1) + Enhancements (P2) |
+| **E4: Programs** | Program dashboard, CRUD, detail view, progress rollup | 4 | 20 | MVP (P1) + Enhancements (P2) |
+| **E5: Metrics & Progress** | My KR list, metric value updates, progress calculation, history | 4 | 14 | MVP (P1) + Enhancements (P2) |
+| **E6: OKR Rituals** | Rituals dashboard, CRUD, facilitation view | 3 | 11 | MVP (P1) + Enhancements (P2) |
+
+Plus cross-cutting: US-003 (ALM Pipeline, P2), US-038 (Responsive, P3), US-039 (Dark Mode, P3), US-029 (Activity Feed, P3), US-037 (Past Rituals, P3).
+
+### power1Admin — Model-Driven App (6 stories, 15 pts)
+
+| Epic | Description | Stories | Points | Phase |
+|------|-------------|---------|--------|-------|
+| **Admin App** | MDA creation, org unit CRUD, sprint CRUD, user-org assignments, dashboard, security | 6 | 15 | MVP |
+
+### power1Browse — Canvas App on SharePoint (18 stories, 79 pts)
+
+| Epic | Description | Stories | Points | Phase |
+|------|-------------|---------|--------|-------|
+| **B0: Foundation** | SharePoint site & lists, Dataverse-to-SharePoint sync flows, validation | 3 | 11 | Phase 2 |
+| **B1: Shell & Navigation** | Canvas App shell, sprint selector | 2 | 8 | Phase 2 |
+| **B2: OKR Browser** | OKR list view, filters, detail views, search | 5 | 26 | Phase 2 |
+| **B3: Programs Browser** | Programs dashboard, program detail with linked OKRs | 2 | 8 | Phase 2 |
+| **B4: Sync Enhancements** | N:N junction sync flows, "last synced" indicator | 2 | 6 | Enhancements |
+| **B5: Visual Enhancements** | Progress visualization, dark mode | 2 | 8 | Enhancements + Polish |
+| **B6: Analytics** | Embedded Power BI dashboard, metric history view | 2 | 12 | Enhancements |
 
 ---
 
@@ -125,6 +162,7 @@ The composite components eliminate redundant re-implementation of Objective and 
 
 - **Capacity**: 40 hrs/week (5 days × 8 hrs)
 - **Sprint**: 1 week
+- **Start date**: 2026-02-09
 - **Execution**: Sequential — one workstream at a time
 - **Ideal for**: Solo developer or small consultancy engagement
 
@@ -134,54 +172,58 @@ The composite components eliminate redundant re-implementation of Objective and 
 |-------|---------|-------|--------|------------|-----------|
 | 1. Foundation | 1–2 | Dataverse schema, security, Canvas App + Component Library | 26 | powerOne (E0) | |
 | 2. Admin App | 3 | Model-Driven App — full delivery | 15 | power1Admin | Admin data entry enabled |
-| 3. Shell | 4–5 | Sidebar, user context, routing | 16 | powerOne (E1 core) | |
+| 3. Shell | 4–5 | Sidebar, user context, routing | 16 | powerOne (E1) | |
 | 4. OKR Core | 6–11 | List, CRUD, metrics, tasks, filters | 63 | powerOne (E3 P1) | All core components built |
-| 5. Programs | 12–13 | Dashboard, CRUD, detail + Rituals dash & CRUD | 21 | powerOne (E4, E6 P1) | |
-| 6. Metrics | 14 | KR list, value update, progress calculation | 11 | powerOne (E5 P1) | **★ MVP Complete** |
-| 7. Enhancements | 15–17 | ALM, saved filters, views, rollup, facilitation, nav | 41 | powerOne (P2) | P2 complete |
-| 8. Polish | 18–19 | Activity feed, past rituals, dark mode, responsive | 16 | powerOne (P3) | Full product |
+| 5. Programs + Rituals | 12–13 | Dashboard, CRUD, detail + Rituals dash & CRUD | 21 | powerOne (E4, E6 P1) | |
+| 6. Metrics | 14 | KR list, value update, progress calculation | 11 | powerOne (E5 P1) | **★ Phase 1 — MVP Complete** |
+| 7. Browse Foundation | 15–16 | SharePoint lists, sync flows, Canvas App shell | 19 | power1Browse (B0, B1) | Sync operational |
+| 8. Browse OKR + Programs | 17–20 | OKR browser, filters, detail views, Programs | 30 | power1Browse (B2, B3) | **★ Phase 2 — Browse Complete** |
+| 9. Enhancements | 21–25 | powerOne P2 + power1Browse P2 | 67 | powerOne + power1Browse | Phase 3 complete |
+| 10. Polish | 26–27 | powerOne P3 + power1Browse P3 | 20 | powerOne + power1Browse | Full product |
 
 ### Timeline
 
 ```mermaid
 gantt
-    title Scenario 1 — Single Developer (1 FTE), MVP First
+    title Scenario 1 — Single Developer (1 FTE)
     dateFormat YYYY-MM-DD
     axisFormat %b %d
 
-    section Foundation
-    E0 Foundation (26 pts)        :s1, 2025-07-07, 14d
-
-    section Admin App
+    section Phase 1 — MVP
+    E0 Foundation (26 pts)        :s1, 2026-02-09, 14d
     power1Admin (15 pts)          :s3, after s1, 7d
-
-    section MVP — Canvas App
     E1 Shell (16 pts)             :s4, after s3, 14d
     E3 OKR Core P1 (63 pts)      :s6, after s4, 42d
     E4 + E6 P1 (21 pts)          :s12, after s6, 14d
     E5 Metrics P1 (11 pts)       :s14, after s12, 7d
 
-    section MVP Milestone
+    section Phase 1 Milestone
     ★ MVP Complete                :milestone, after s14, 0d
 
-    section Enhancements (P2)
-    P2 Stories (41 pts)           :s15, after s14, 21d
+    section Phase 2 — Browse
+    B0 + B1 Foundation (19 pts)   :s15, after s14, 14d
+    B2 + B3 OKR + Programs (30 pts) :s17, after s15, 28d
 
-    section Polish (P3)
-    P3 Stories (16 pts)           :s18, after s15, 14d
+    section Phase 2 Milestone
+    ★ Browse Complete             :milestone, after s17, 0d
+
+    section Phase 3 — Enhancements
+    P2 Stories (67 pts)           :s21, after s17, 35d
+
+    section Phase 4 — Polish
+    P3 Stories (20 pts)           :s26, after s21, 14d
 ```
 
 ### Summary
 
 | Metric | Optimistic | Realistic | Conservative |
 |--------|-----------|-----------|--------------|
-| **MVP delivery** | **Sprint 13** | **Sprint 14** | **Sprint 16** |
-| MVP weeks | 13 | 14 | 16 |
-| Full product sprints | 17 | 19 | 22 |
-| Full product weeks | 17 | 19 | 22 |
-| Total FTE-weeks | 17 | 19 | 22 |
+| **Phase 1 — MVP** | **Sprint 13** | **Sprint 14** | **Sprint 16** |
+| **Phase 2 — Browse** | Sprint 18 | Sprint 20 | Sprint 22 |
+| **Full product** | Sprint 25 | Sprint 27 | Sprint 30 |
+| Total FTE-weeks | 25 | 27 | 30 |
 
-**Key advantage**: Zero coordination overhead, full context retention, clear MVP milestone.
+**Key advantage**: Zero coordination overhead, full context retention, clear phase milestones.
 
 **Key risk**: Single point of failure — illness, vacation, or departure stops all progress.
 
@@ -194,7 +236,7 @@ gantt
 | Role | Allocation | Hours/Week | Focus |
 |------|-----------|------------|-------|
 | **Lead Developer** | 0.8 FTE (4 days/week) | 32 | Foundation, Shell, OKR core (critical path) |
-| **Remote Developer** | 0.5 FTE (2.5 days/week) | 20 | Admin App, Programs, Metrics, Rituals |
+| **Remote Developer** | 0.5 FTE (2.5 days/week) | 20 | Admin App, Programs, Metrics, Rituals, then Browse |
 | **Combined** | 1.3 FTE | 52 | |
 
 ### Coordination Overhead
@@ -206,74 +248,83 @@ gantt
 | Knowledge transfer | –5% velocity first 3 sprints | Pair programming during foundation |
 | Context switching | –1 pt/sprint remote dev | Clear story boundaries per section |
 
-### Parallel Track Strategy — MVP First
+### Parallel Track Strategy
 
 **Track A — Lead Developer** (critical path):
-Foundation → Shell → E3 OKR core (list, CRUD, lifecycle, cascade, filters) → P2 advanced (views, navigation)
+Foundation → Shell → E3 OKR core → power1Browse (B0–B3) → P2 advanced (views, navigation)
 
 **Track B — Remote Developer** (parallel sections):
-Ramp-up → power1Admin → E6 Rituals → E4 Programs → E5 Metrics → P2 enhancements → P3 polish
+Ramp-up → power1Admin → E6 Rituals → E4 Programs → E5 Metrics → power1Browse P2 → P3 polish
 
 ### Phase Plan
 
 | Phase | Sprints | Track A (Lead, 0.8 FTE) | Track B (Remote, 0.5 FTE) | Milestone |
 |-------|---------|------------------------|--------------------------|-----------|
 | 1. Foundation | 1–3 | E0: Schema, security, Canvas App + Components (26 pts) | Ramp-up, environment access | |
-| 2. Shell + Admin | 4–5 | E1 core: Sidebar, context, routing (16 pts) | power1Admin: Full delivery (15 pts) | Admin app live |
+| 2. Shell + Admin | 4–5 | E1: Sidebar, context, routing (16 pts) | power1Admin: Full delivery (15 pts) | Admin app live |
 | 3. OKR Core | 6–9 | E3: List, Obj CRUD, KR CRUD, Metrics, Tasks (34 pts) | E6: Rituals P1 (6 pts), then E4: Programs after US-012 done (10 pts) | |
 | 4. OKR Logic + Filters | 10–11 | E3: Lifecycle, cascade, filters (21 pts) | E4: Program detail (5 pts) + E5: Metrics (11 pts) | |
-| 5. MVP wrap-up | 12 | Sprint buffer / stabilization | Sprint buffer / stabilization | **★ MVP Complete** |
-| 6. P2 Enhancements | 13–15 | Views, breadcrumbs, cascade nav (18 pts) | Saved filters, rollup, history, facilitation (23 pts) | P2 complete |
-| 7. P3 Polish | 16–17 | Responsive layout (8 pts) | Activity, past rituals, dark mode (8 pts) | Full product |
+| 5. MVP wrap-up | 12 | Sprint buffer / stabilization | Sprint buffer / stabilization | **★ Phase 1 — MVP Complete** |
+| 6. Browse | 13–16 | B0–B1: SharePoint, sync, shell (19 pts) | B2–B3: OKR browser, programs (34 pts) | |
+| 7. Browse wrap-up | 17 | Buffer / stabilization | Buffer / stabilization | **★ Phase 2 — Browse Complete** |
+| 8. Enhancements | 18–22 | powerOne P2 (41 pts) | power1Browse P2 (26 pts) | Phase 3 complete |
+| 9. Polish | 23–24 | powerOne P3 (16 pts) | power1Browse P3 (4 pts) | Full product |
 
 ### Timeline
 
 ```mermaid
 gantt
-    title Scenario 2 — Lead (0.8 FTE) + Remote (0.5 FTE), MVP First
+    title Scenario 2 — Lead (0.8 FTE) + Remote (0.5 FTE)
     dateFormat YYYY-MM-DD
     axisFormat %b %d
 
-    section Lead Developer
-    E0 Foundation (26 pts)        :a1, 2025-07-07, 21d
+    section Phase 1 — MVP (Lead)
+    E0 Foundation (26 pts)        :a1, 2026-02-09, 21d
     E1 Shell (16 pts)             :a2, after a1, 14d
     E3 OKR Core (34 pts)          :a3, after a2, 28d
     E3 Filters (21 pts)           :a4, after a3, 14d
     Buffer/Stabilization          :a5, after a4, 7d
 
-    section Lead — MVP Milestone
-    ★ MVP Complete                :milestone, after a5, 0d
-
-    section Lead — Post-MVP
-    P2 Views + Nav (18 pts)       :a6, after a5, 14d
-    P3 Responsive (8 pts)         :a7, after a6, 7d
-
-    section Remote Developer
-    Ramp-up                       :b1, 2025-07-07, 21d
+    section Phase 1 — MVP (Remote)
+    Ramp-up                       :b1, 2026-02-09, 21d
     power1Admin (15 pts)          :b2, after b1, 14d
     E6 Rituals P1 (6 pts)         :b3, after b2, 7d
     E4 Programs P1 (15 pts)       :b4, after b3, 14d
     E5 Metrics P1 (11 pts)        :b5, after b4, 14d
 
-    section Remote — MVP Milestone
-    ★ MVP Complete                :milestone, after b5, 0d
+    section Phase 1 Milestone
+    ★ MVP Complete                :milestone, after a5, 0d
 
-    section Remote — Post-MVP
-    P2 Enhancements (23 pts)      :b6, after b5, 21d
-    P3 Polish (8 pts)             :b7, after b6, 7d
+    section Phase 2 — Browse (Lead)
+    B0-B1 Foundation + Shell (19 pts) :a6, after a5, 14d
+    B2 OKR Browser (26 pts)       :a7, after a6, 21d
+
+    section Phase 2 — Browse (Remote)
+    B3 Programs (8 pts)           :b6, after b5, 14d
+    Buffer/Stabilization          :b7, after b6, 7d
+
+    section Phase 2 Milestone
+    ★ Browse Complete             :milestone, after a7, 0d
+
+    section Phase 3 — Enhancements
+    Lead: powerOne P2 (41 pts)    :a8, after a7, 28d
+    Remote: Browse P2 (26 pts)    :b8, after b7, 28d
+
+    section Phase 4 — Polish
+    Lead: powerOne P3 (16 pts)    :a9, after a8, 14d
+    Remote: Browse P3 (4 pts)     :b9, after b8, 7d
 ```
 
 ### Summary
 
 | Metric | Optimistic | Realistic | Conservative |
 |--------|-----------|-----------|--------------|
-| **MVP delivery** | **Sprint 10** | **Sprint 12** | **Sprint 14** |
-| MVP weeks | 10 | 12 | 14 |
-| Full product sprints | 14 | 17 | 19 |
-| Full product weeks | 14 | 17 | 19 |
-| Total FTE-weeks | 18.2 | 22.1 | 24.7 |
+| **Phase 1 — MVP** | **Sprint 10** | **Sprint 12** | **Sprint 14** |
+| **Phase 2 — Browse** | Sprint 14 | Sprint 17 | Sprint 19 |
+| **Full product** | Sprint 22 | Sprint 24 | Sprint 27 |
+| Total FTE-weeks | 28.6 | 31.2 | 35.1 |
 
-**Key advantage**: MVP delivered 2–3 weeks faster. Admin app live early. Parallel work on independent sections. Component library available to both devs after Sprint 6.
+**Key advantage**: MVP delivered 2–3 weeks faster. Admin app live early. power1Browse can start immediately after MVP with both developers. Component library available to both devs after Sprint 6.
 
 **Key risk**: Remote developer depends on Lead completing US-012 (Objective CRUD + SidePanel component) before starting Programs. Coordination on solution exports.
 
@@ -283,29 +334,32 @@ gantt
 
 | Metric | Scenario 1 (1 FTE) | Scenario 2 (0.8 + 0.5 FTE) |
 |--------|--------------------|-----------------------------|
-| **MVP delivery** | **Week 14** | **Week 12** |
-| **Full product** | Week 19 | Week 17 |
-| **Duration range** | 17–22 weeks | 14–19 weeks |
-| **Total FTE-weeks** | 19 | 22.1 |
+| **Phase 1 — MVP** | **Week 14** | **Week 12** |
+| **Phase 2 — Browse** | Week 20 | Week 17 |
+| **Full product** | Week 27 | Week 24 |
+| **Duration range** | 25–30 weeks | 22–27 weeks |
+| **Total FTE-weeks** | 27 | 31.2 |
 | **Cost efficiency** | Higher (less overhead) | Lower (coordination cost) |
 | **Admin app delivery** | Week 3 | Week 5 (parallel with shell) |
+| **Browse delivery** | Week 20 (sequential) | Week 17 (parallel tracks) |
 | **Risk: single point of failure** | High | Low |
 | **Risk: coordination** | None | Medium |
 | **Risk: quality** | Low (single vision) | Medium (review needed) |
 
 ### Cost Comparison (illustrative)
 
-Assuming a blended rate of $150/hr for lead and $120/hr for remote:
+Assuming a blended rate of €150/hr for lead and €120/hr for remote:
 
 | | Scenario 1 | Scenario 2 |
 |--|-----------|-----------|
-| Lead cost | 19w × 40h × $150 = $114,000 | 17w × 32h × $150 = $81,600 |
-| Remote cost | — | 17w × 20h × $120 = $40,800 |
-| **Total** | **$114,000** | **$122,400** |
-| **Per week** | **$6,000** | **$7,200** |
-| **Cost to MVP** | $84,000 (14w) | $86,400 (12w) |
+| Lead cost | 27w × 40h × €150 = €162,000 | 24w × 32h × €150 = €115,200 |
+| Remote cost | — | 24w × 20h × €120 = €57,600 |
+| **Total** | **€162,000** | **€172,800** |
+| **Per week** | **€6,000** | **€7,200** |
+| **Cost to MVP** | €84,000 (14w) | €86,400 (12w) |
+| **Cost to Browse** | €120,000 (20w) | €122,400 (17w) |
 
-Scenario 2 costs ~7% more total but delivers MVP ~2 weeks faster. Cost-to-MVP is comparable.
+Scenario 2 costs ~7% more total but delivers Browse ~3 weeks faster. Cost-to-MVP is comparable.
 
 ---
 
@@ -329,7 +383,9 @@ Scenario 2 costs ~7% more total but delivers MVP ~2 weeks faster. Cost-to-MVP is
 | Requirement changes mid-sprint | Medium | Medium | 1-week sprints limit blast radius; use backlog refinement |
 | Stakeholder availability for testing | Medium | Medium | Schedule demo at end of each sprint; MVP demo at Sprint 13/14 |
 | Environment provisioning delays | Low | High | Request environments in Sprint 0 (before development starts) |
-| Licensing procurement | Low | High | Confirm Power Apps Premium licenses before Sprint 1 |
+| Licensing procurement | Low | High | Confirm Power Apps Premium licenses (€6/user × 255 users) before Sprint 1 |
+| SharePoint sync flow reliability | Medium | Medium | Event-triggered + scheduled reconciliation; monitor via Power Automate analytics |
+| power1Browse classified as Premium | Medium | High | Verify app license designation is "Standard"; never add premium connectors |
 
 ### Scenario-Specific Risks
 
@@ -345,12 +401,13 @@ Scenario 2 costs ~7% more total but delivers MVP ~2 weeks faster. Cost-to-MVP is
 
 ## Recommendations
 
-### MVP-First Delivery
+### Phased Delivery
 
-1. **All P1 stories complete before starting P2** — ensures a usable product at the earliest possible point
-2. **MVP demo at Sprint 13–14** — stakeholders see the full core product before enhancement work begins
-3. **P2/P3 can be descoped** — if timelines tighten, the MVP is already deployed and usable
+1. **Phase 1 (MVP) complete before Phase 2 (Browse)** — ensures 250 power users have a working OKR platform before extending to 600 read-only viewers
+2. **MVP demo at Sprint 13–14** — stakeholders see the full core product before browse development begins
+3. **Phase 2 can be descoped** — if timelines tighten, the MVP is already deployed and usable for 250 users
 4. **Component library pays dividends** — by Sprint 5, the composite ObjectiveCard and KeyResultCard exist, accelerating all stories that display OKRs across sections
+5. **power1Browse starts with sync validation** — build and test the Dataverse→SharePoint data pipeline before any Canvas App development
 
 ### For a Solo Developer (Scenario 1)
 
@@ -368,14 +425,14 @@ Scenario 2 costs ~7% more total but delivers MVP ~2 weeks faster. Cost-to-MVP is
 5. **Weekly sync on solution merges** — export/import managed solutions carefully
 6. **MVP convergence at Sprint 12** — both tracks should have all P1 stories done; Sprint 12 is buffer/stabilization
 
-### For power1Browse
+### For power1Browse (Phase 2)
 
-1. **Start after powerOne Sprint 2** — Dataverse schema must be deployed and populated before sync flows have data to work with
-2. **Can be developed in parallel** with powerOne by a second developer — no code dependencies, only data dependencies
-3. **Sync flows first** (Sprint 1) — validate the data pipeline before building the Canvas App
-4. **Verify license designation** — check that the Canvas App shows "Standard" designation in Power Apps admin before distributing to 500+ users
-5. **Never add premium connectors** — this is the single most critical rule; adding Dataverse, SQL, or custom connectors triggers $20/user/month for all users
-6. **MVP at Sprint 6** (9 weeks from power1Browse start) — 12 stories deliver full read-only OKR + Programs browsing
+1. **Start after Phase 1 MVP** — Dataverse must be deployed and populated with real data before sync flows have meaningful data to work with
+2. **Can be developed in parallel** by a second developer — no code dependencies, only data dependencies
+3. **Sync flows first** — validate the data pipeline before building the Canvas App
+4. **Verify license designation** — check that the Canvas App shows "Standard" designation in Power Apps admin before distributing to 600 users
+5. **Never add premium connectors** — this is the single most critical rule; adding Dataverse, SQL, or custom connectors triggers €6/user/month for all 600 users (€3,600/month)
+6. **Phase 2 complete at Sprint 6** (from power1Browse start) — 12 stories deliver full read-only OKR + Programs browsing
 
 ### General
 
@@ -384,7 +441,7 @@ Scenario 2 costs ~7% more total but delivers MVP ~2 weeks faster. Cost-to-MVP is
 - **Use the backlog CSV files** for import into Azure DevOps or Jira for sprint tracking (includes Phase and Components columns)
 - **Review velocity after Sprint 3** and adjust forecasts — initial sprints are often slower due to environment setup
 - **Component library review at Sprint 6** — validate that primitives and composites (`po_ObjectiveCard`, `po_KeyResultCard`) work across sections before remote dev starts using them
-- **License audit before go-live** — verify powerOne users have Power Apps Premium, power1Browse users have M365 E3/E5, sync flow owner has Power Automate Premium
+- **License audit before go-live** — verify 255 powerOne/power1Admin users have Power Apps Premium (€6/user), 600 power1Browse users have M365 E3/E5, sync flow owner has Power Automate Premium (~€15/month)
 
 ---
 
