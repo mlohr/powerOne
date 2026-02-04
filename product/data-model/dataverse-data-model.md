@@ -446,7 +446,9 @@ The `po_` publisher prefix appears on schema/logical names only. Display names s
 
 | Operation | Tool |
 |---|---|
-| Create tables + primitive/choice columns | Python SDK (`create_table()`, `create_columns()`) |
+| Create global choices (option sets) | Web API (`GlobalOptionSetDefinitions`) |
+| Create tables + primitive columns | Python SDK (`create_table()`) |
+| Create choice columns referencing global option sets | Web API (`PicklistAttributeMetadata` with `GlobalOptionSet@odata.bind`) |
 | Set table and column display names | Web API (PATCH `EntityDefinitions`, `Attributes`) |
 | Create Memo columns (Description, Notes, CriteriaJson) | Web API (`MemoAttributeMetadata`) |
 | Create all 1:N relationships (R1–R16) | Web API (`OneToManyRelationshipMetadata`) |
@@ -454,13 +456,17 @@ The `po_` publisher prefix appears on schema/logical names only. Display names s
 | Create records, query, update, delete | Python SDK (CRUD methods) |
 | Seed sample data | Python SDK (`create()` with list payloads) |
 
+> **Note on choices**: All 10 choice definitions are created as **global option sets** with proper schema names (e.g., `po_SprintStatus`). Choice columns are then added to tables referencing these global option sets, ensuring they are named, reusable, and visible under Settings → Customizations → Option Sets.
+
 ### Recommended Build Order
 
+0. **Global choices**: Create all 10 global option sets via Web API (must exist before choice columns)
 1. **Foundation tables** (no dependencies): `po_Sprint`, `po_OrganizationalUnit`
 2. **Core OKR tables**: `po_Objective` → `po_KeyResult` → `po_Metric` → `po_MetricUpdate` → `po_Task`
 3. **Programs**: `po_Program` → `po_ActivityUpdate`
 4. **Process**: `po_Ritual`
 5. **User features**: `po_SavedFilter`
+5b. **Choice columns**: Add 10 picklist columns referencing the global option sets from step 0
 6. **Display names**: Set clean display names on all tables and columns (removes `po_` from UI)
 7. **Memo columns**: Description, Notes, CriteriaJson
 8. **Relationships**: All 1:N first, then N:N

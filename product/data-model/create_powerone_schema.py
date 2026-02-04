@@ -4,11 +4,13 @@ PowerOne — Dataverse Schema Creation Script
 Creates the complete PowerOne data model in Microsoft Dataverse, organized
 in dependency-ordered phases:
 
+  Phase 0: Global choices (option sets) via Web API
   Phase 1: Foundation tables (no dependencies)
   Phase 2: Core OKR tables (depend on Phase 1)
   Phase 3: OKR detail tables (depend on Phase 2)
   Phase 4: Programs & process tables (depend on Phase 1)
   Phase 5: User feature tables (depend on Phase 1)
+  Phase 5b: Choice columns referencing global option sets (tables must exist)
   Phase 6: Display names via Web API (clean names without publisher prefix)
   Phase 7: Memo columns via Web API (tables must exist)
   Phase 8: 1:N relationships via Web API (tables must exist)
@@ -130,6 +132,133 @@ class ActivityType(IntEnum):
 
 
 # =============================================================================
+# Global Choice (Option Set) Definitions
+# =============================================================================
+# Choices are created as global option sets via the Web API so they have proper
+# schema names (e.g., po_SprintStatus) and can be reused across columns.
+# The IntEnum classes above remain as Python constants for seed data scripts.
+
+GLOBAL_CHOICES = [
+    {
+        "name": f"{P}_OrganizationalLevel",
+        "display": "Organizational Level",
+        "options": [
+            ("Group", 100000000),
+            ("Entity", 100000001),
+            ("Domain", 100000002),
+            ("Department", 100000003),
+            ("Team", 100000004),
+        ],
+    },
+    {
+        "name": f"{P}_ObjectiveStatus",
+        "display": "Objective Status",
+        "options": [
+            ("Draft", 100000000),
+            ("Accepted", 100000001),
+            ("Active", 100000002),
+            ("Done", 100000003),
+            ("Archived", 100000004),
+            ("Cancelled", 100000005),
+        ],
+    },
+    {
+        "name": f"{P}_KeyResultStatus",
+        "display": "Key Result Status",
+        "options": [
+            ("Draft", 100000000),
+            ("Accepted", 100000001),
+            ("Active", 100000002),
+            ("Done", 100000003),
+            ("Archived", 100000004),
+            ("Cancelled", 100000005),
+        ],
+    },
+    {
+        "name": f"{P}_SprintStatus",
+        "display": "Sprint Status",
+        "options": [
+            ("Inactive", 100000000),
+            ("Active", 100000001),
+            ("Done", 100000002),
+        ],
+    },
+    {
+        "name": f"{P}_TaskStatus",
+        "display": "Task Status",
+        "options": [
+            ("Open", 100000000),
+            ("Completed", 100000001),
+        ],
+    },
+    {
+        "name": f"{P}_MetricScale",
+        "display": "Metric Scale",
+        "options": [
+            ("Percentage", 100000000),
+            ("Absolute", 100000001),
+            ("Score", 100000002),
+        ],
+    },
+    {
+        "name": f"{P}_MetricDirection",
+        "display": "Metric Direction",
+        "options": [
+            ("Increase", 100000000),
+            ("Decrease", 100000001),
+        ],
+    },
+    {
+        "name": f"{P}_RitualType",
+        "display": "Ritual Type",
+        "options": [
+            ("Planning", 100000000),
+            ("Check-in", 100000001),
+            ("Review", 100000002),
+            ("Retrospective", 100000003),
+        ],
+    },
+    {
+        "name": f"{P}_RitualStatus",
+        "display": "Ritual Status",
+        "options": [
+            ("Upcoming", 100000000),
+            ("In Progress", 100000001),
+            ("Completed", 100000002),
+        ],
+    },
+    {
+        "name": f"{P}_ActivityType",
+        "display": "Activity Type",
+        "options": [
+            ("Program Created", 100000000),
+            ("Program Edited", 100000001),
+            ("Objective Added", 100000002),
+            ("Objective Removed", 100000003),
+            ("Progress Update", 100000004),
+            ("Lead Added", 100000005),
+            ("Lead Removed", 100000006),
+        ],
+    },
+]
+
+# Choice columns to add to tables after global choices are created.
+# (table_schema, column_schema, display_name, global_choice_name, required)
+CHOICE_COLUMNS = [
+    (f"{P}_Sprint", f"{P}_Status", "Status", f"{P}_SprintStatus", True),
+    (f"{P}_OrganizationalUnit", f"{P}_Level", "Level", f"{P}_OrganizationalLevel", True),
+    (f"{P}_Objective", f"{P}_Status", "Status", f"{P}_ObjectiveStatus", True),
+    (f"{P}_KeyResult", f"{P}_Status", "Status", f"{P}_KeyResultStatus", True),
+    (f"{P}_Metric", f"{P}_Scale", "Scale", f"{P}_MetricScale", True),
+    (f"{P}_Metric", f"{P}_Direction", "Direction", f"{P}_MetricDirection", True),
+    (f"{P}_Task", f"{P}_Status", "Status", f"{P}_TaskStatus", True),
+    (f"{P}_Ritual", f"{P}_Type", "Type", f"{P}_RitualType", True),
+    (f"{P}_Ritual", f"{P}_Status", "Status", f"{P}_RitualStatus", True),
+    (f"{P}_ActivityUpdate", f"{P}_Type", "Type", f"{P}_ActivityType", True),
+]
+
+
+# =============================================================================
 # Display Name Definitions
 # =============================================================================
 # The SDK create_table() derives display names from the schema name, which
@@ -153,27 +282,22 @@ TABLE_DISPLAY_NAMES = {
 # Column display names: (table_schema, column_schema, display_name)
 # Lookup columns get display names via relationship definitions (Phase 8).
 # Memo columns get display names via create_memo_column() (Phase 7).
+# Choice columns are excluded — they get display names from create_choice_column().
 COLUMN_DISPLAY_NAMES = [
     # Sprint
     (f"{P}_Sprint", f"{P}_Name", "Name"),
     (f"{P}_Sprint", f"{P}_StartDate", "Start Date"),
     (f"{P}_Sprint", f"{P}_EndDate", "End Date"),
-    (f"{P}_Sprint", f"{P}_Status", "Status"),
     # Organizational Unit
     (f"{P}_OrganizationalUnit", f"{P}_Name", "Name"),
-    (f"{P}_OrganizationalUnit", f"{P}_Level", "Level"),
     # Objective
     (f"{P}_Objective", f"{P}_Title", "Title"),
-    (f"{P}_Objective", f"{P}_Status", "Status"),
     (f"{P}_Objective", f"{P}_Progress", "Progress"),
     # Key Result
     (f"{P}_KeyResult", f"{P}_Title", "Title"),
-    (f"{P}_KeyResult", f"{P}_Status", "Status"),
     (f"{P}_KeyResult", f"{P}_Progress", "Progress"),
     # Metric
     (f"{P}_Metric", f"{P}_Name", "Name"),
-    (f"{P}_Metric", f"{P}_Scale", "Scale"),
-    (f"{P}_Metric", f"{P}_Direction", "Direction"),
     (f"{P}_Metric", f"{P}_BaselineValue", "Baseline Value"),
     (f"{P}_Metric", f"{P}_CurrentValue", "Current Value"),
     (f"{P}_Metric", f"{P}_TargetValue", "Target Value"),
@@ -184,7 +308,6 @@ COLUMN_DISPLAY_NAMES = [
     (f"{P}_MetricUpdate", f"{P}_RecordedAt", "Recorded At"),
     # Task
     (f"{P}_Task", f"{P}_Description", "Description"),
-    (f"{P}_Task", f"{P}_Status", "Status"),
     (f"{P}_Task", f"{P}_CompletedAt", "Completed At"),
     # Program
     (f"{P}_Program", f"{P}_Name", "Name"),
@@ -192,13 +315,10 @@ COLUMN_DISPLAY_NAMES = [
     (f"{P}_Program", f"{P}_EntitiesInvolved", "Entities Involved"),
     # Activity Update
     (f"{P}_ActivityUpdate", f"{P}_Description", "Description"),
-    (f"{P}_ActivityUpdate", f"{P}_Type", "Type"),
     (f"{P}_ActivityUpdate", f"{P}_Timestamp", "Timestamp"),
     (f"{P}_ActivityUpdate", f"{P}_UserName", "User Name"),
     # Ritual
     (f"{P}_Ritual", f"{P}_Title", "Title"),
-    (f"{P}_Ritual", f"{P}_Type", "Type"),
-    (f"{P}_Ritual", f"{P}_Status", "Status"),
     (f"{P}_Ritual", f"{P}_DateTime", "Date Time"),
     (f"{P}_Ritual", f"{P}_Facilitator", "Facilitator"),
     (f"{P}_Ritual", f"{P}_ParticipantCount", "Participant Count"),
@@ -415,6 +535,75 @@ def create_many_to_many(headers, base_url, entity1, entity1_display,
     print(f"  + N:N  {rel_name}  ({entity1} <-> {entity2})")
 
 
+def create_global_optionset(headers, base_url, name, display_name, options):
+    """Create a global option set (Choice) via Web API."""
+    payload = {
+        "@odata.type": "Microsoft.Dynamics.CRM.OptionSetMetadata",
+        "IsGlobal": True,
+        "Name": name.lower(),
+        "DisplayName": {
+            "@odata.type": "Microsoft.Dynamics.CRM.Label",
+            "LocalizedLabels": [{
+                "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+                "Label": display_name,
+                "LanguageCode": 1033,
+            }],
+        },
+        "OptionSetType": "Picklist",
+        "Options": [
+            {
+                "Value": value,
+                "Label": {
+                    "@odata.type": "Microsoft.Dynamics.CRM.Label",
+                    "LocalizedLabels": [{
+                        "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+                        "Label": label,
+                        "LanguageCode": 1033,
+                    }],
+                },
+            }
+            for label, value in options
+        ],
+    }
+    resp = requests.post(
+        f"{base_url}/api/data/{API_VERSION}/GlobalOptionSetDefinitions",
+        json=payload,
+        headers=headers,
+    )
+    resp.raise_for_status()
+    print(f"  + Global choice: {name} ({display_name}) — {len(options)} options")
+
+
+def create_choice_column(headers, base_url, table_logical, column_schema, column_display,
+                         global_choice_name, required=False):
+    """Create a picklist column referencing a global option set via Web API."""
+    payload = {
+        "@odata.type": "Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
+        "SchemaName": column_schema,
+        "DisplayName": {
+            "@odata.type": "Microsoft.Dynamics.CRM.Label",
+            "LocalizedLabels": [{
+                "@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel",
+                "Label": column_display,
+                "LanguageCode": 1033,
+            }],
+        },
+        "RequiredLevel": {
+            "Value": "ApplicationRequired" if required else "None",
+            "CanBeChanged": True,
+            "ManagedPropertyLogicalName": "canmodifyrequirementlevelsettings",
+        },
+        "GlobalOptionSet@odata.bind": f"/GlobalOptionSetDefinitions(Name='{global_choice_name.lower()}')",
+    }
+    resp = requests.post(
+        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions(LogicalName='{table_logical}')/Attributes",
+        json=payload,
+        headers=headers,
+    )
+    resp.raise_for_status()
+    print(f"  + Choice column: {table_logical}.{column_schema} → {global_choice_name}")
+
+
 def set_table_display_name(headers, base_url, table_logical_name, display_name, plural_display_name):
     """Set the display name and plural display name for a table via Web API."""
     payload = {
@@ -489,30 +678,45 @@ def main():
         return table_schema.lower()
 
     # ====================================================================
+    # PHASE 0: Global Choices (Web API — must exist before choice columns)
+    # ====================================================================
+    phase_header(0, "GLOBAL CHOICES", "10 global option sets used by choice columns across tables")
+
+    headers = get_web_api_headers(credential, ENV_URL)
+
+    for choice in GLOBAL_CHOICES:
+        with_retry(
+            lambda c=choice: create_global_optionset(
+                headers, ENV_URL, c["name"], c["display"], c["options"]
+            ),
+            f"Global choice {choice['name']}",
+        )
+        time.sleep(0.5)
+
+    print()
+
+    # ====================================================================
     # PHASE 1: Foundation Tables (no dependencies)
     # ====================================================================
     phase_header(1, "FOUNDATION TABLES", "Sprint + OrganizationalUnit — no foreign keys needed")
 
-    # Sprint
+    # Sprint (choice columns added in Phase 5b)
     print("Creating Sprint (po_Sprint)...")
     with_retry(lambda: client.create_table(
         f"{P}_Sprint",
         {
             f"{P}_StartDate": "datetime",
             f"{P}_EndDate": "datetime",
-            f"{P}_Status": SprintStatus,
         },
         primary_column_schema_name=f"{P}_Name",
     ), "po_Sprint")
     print("  Created.\n")
 
-    # Organizational Unit
+    # Organizational Unit (choice columns added in Phase 5b)
     print("Creating Organizational Unit (po_OrganizationalUnit)...")
     with_retry(lambda: client.create_table(
         f"{P}_OrganizationalUnit",
-        {
-            f"{P}_Level": OrganizationalLevel,
-        },
+        {},
         primary_column_schema_name=f"{P}_Name",
     ), "po_OrganizationalUnit")
     print("  Created.\n")
@@ -520,26 +724,24 @@ def main():
     # ====================================================================
     # PHASE 2: Core OKR Tables (depend on Phase 1 via relationships)
     # ====================================================================
-    phase_header(2, "CORE OKR TABLES", "Objective + KeyResult — SDK columns only, lookups added in Phase 7")
+    phase_header(2, "CORE OKR TABLES", "Objective + KeyResult — SDK columns only, choice/lookups added later")
 
-    # Objective
+    # Objective (choice columns added in Phase 5b)
     print("Creating Objective (po_Objective)...")
     with_retry(lambda: client.create_table(
         f"{P}_Objective",
         {
-            f"{P}_Status": ObjectiveStatus,
             f"{P}_Progress": "int",
         },
         primary_column_schema_name=f"{P}_Title",
     ), "po_Objective")
     print("  Created.\n")
 
-    # Key Result
+    # Key Result (choice columns added in Phase 5b)
     print("Creating Key Result (po_KeyResult)...")
     with_retry(lambda: client.create_table(
         f"{P}_KeyResult",
         {
-            f"{P}_Status": KeyResultStatus,
             f"{P}_Progress": "int",
         },
         primary_column_schema_name=f"{P}_Title",
@@ -551,13 +753,11 @@ def main():
     # ====================================================================
     phase_header(3, "OKR DETAIL TABLES", "Metric, MetricUpdate, Task — depend on KeyResult")
 
-    # Metric
+    # Metric (choice columns added in Phase 5b)
     print("Creating Metric (po_Metric)...")
     with_retry(lambda: client.create_table(
         f"{P}_Metric",
         {
-            f"{P}_Scale": MetricScale,
-            f"{P}_Direction": MetricDirection,
             f"{P}_BaselineValue": "decimal",
             f"{P}_CurrentValue": "decimal",
             f"{P}_TargetValue": "decimal",
@@ -579,12 +779,11 @@ def main():
     ), "po_MetricUpdate")
     print("  Created.\n")
 
-    # Task
+    # Task (choice columns added in Phase 5b)
     print("Creating Task (po_Task)...")
     with_retry(lambda: client.create_table(
         f"{P}_Task",
         {
-            f"{P}_Status": TaskStatus,
             f"{P}_CompletedAt": "datetime",
         },
         primary_column_schema_name=f"{P}_Description",
@@ -608,12 +807,11 @@ def main():
     ), "po_Program")
     print("  Created.\n")
 
-    # Activity Update
+    # Activity Update (choice columns added in Phase 5b)
     print("Creating Activity Update (po_ActivityUpdate)...")
     with_retry(lambda: client.create_table(
         f"{P}_ActivityUpdate",
         {
-            f"{P}_Type": ActivityType,
             f"{P}_Timestamp": "datetime",
             f"{P}_UserName": "string",
         },
@@ -621,13 +819,11 @@ def main():
     ), "po_ActivityUpdate")
     print("  Created.\n")
 
-    # Ritual
+    # Ritual (choice columns added in Phase 5b)
     print("Creating Ritual (po_Ritual)...")
     with_retry(lambda: client.create_table(
         f"{P}_Ritual",
         {
-            f"{P}_Type": RitualType,
-            f"{P}_Status": RitualStatus,
             f"{P}_DateTime": "datetime",
             f"{P}_Facilitator": "string",
             f"{P}_ParticipantCount": "int",
@@ -652,6 +848,24 @@ def main():
         primary_column_schema_name=f"{P}_Name",
     ), "po_SavedFilter")
     print("  Created.\n")
+
+    # ====================================================================
+    # PHASE 5b: Choice Columns (Web API — tables + global choices must exist)
+    # ====================================================================
+    phase_header("5b", "CHOICE COLUMNS",
+                 "10 picklist columns referencing global option sets")
+
+    headers = get_web_api_headers(credential, ENV_URL)
+
+    for table_schema, col_schema, col_display, choice_name, required in CHOICE_COLUMNS:
+        with_retry(
+            lambda t=table_schema, c=col_schema, d=col_display, ch=choice_name, r=required:
+                create_choice_column(headers, ENV_URL, ln(t), c, d, ch, r),
+            f"Choice {col_schema} on {table_schema}",
+        )
+        time.sleep(0.5)
+
+    print()
 
     # ====================================================================
     # PHASE 6: Display Names (Web API — tables and columns must exist)
@@ -957,11 +1171,15 @@ def main():
     print("  COMPLETE")
     print(f"{'='*70}")
     num_columns = len(COLUMN_DISPLAY_NAMES)
+    num_choices = len(GLOBAL_CHOICES)
+    num_choice_cols = len(CHOICE_COLUMNS)
     print(f"""
 Schema creation finished.
 
 Summary:
+  Global choices created:   {num_choices}
   Tables created:           11
+  Choice columns added:     {num_choice_cols}
   Display names set:        11 tables + {num_columns} columns
   Memo columns added:       4
   1:N relationships:        16
@@ -970,6 +1188,7 @@ Summary:
 Verify in Power Apps:
   https://make.powerapps.com → Tables → filter by "{P}_"
   Table display names should show without the "{P}_" prefix (e.g. "Sprint", not "po_Sprint")
+  Global choices visible under: Settings → Customizations → Option Sets → filter by "{P}_"
 
 Next steps:
   1. Configure security roles (Admin, Program Lead, Objective Owner, Team Member, Viewer)
