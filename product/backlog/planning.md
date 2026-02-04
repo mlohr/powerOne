@@ -348,18 +348,18 @@ gantt
 
 ### Cost Comparison (illustrative)
 
-Assuming a blended rate of €150/hr for lead and €120/hr for remote:
+Assuming €150/hr for lead and €50/hr for remote:
 
 | | Scenario 1 | Scenario 2 |
 |--|-----------|-----------|
 | Lead cost | 27w × 40h × €150 = €162,000 | 24w × 32h × €150 = €115,200 |
-| Remote cost | — | 24w × 20h × €120 = €57,600 |
-| **Total** | **€162,000** | **€172,800** |
-| **Per week** | **€6,000** | **€7,200** |
-| **Cost to MVP** | €84,000 (14w) | €86,400 (12w) |
-| **Cost to Browse** | €120,000 (20w) | €122,400 (17w) |
+| Remote cost | — | 24w × 20h × €50 = €24,000 |
+| **Total** | **€162,000** | **€139,200** |
+| **Per week** | **€6,000** | **€5,800** |
+| **Cost to MVP** | €84,000 (14w) | €69,600 (12w) |
+| **Cost to Browse** | €120,000 (20w) | €98,600 (17w) |
 
-Scenario 2 costs ~7% more total but delivers Browse ~3 weeks faster. Cost-to-MVP is comparable.
+Scenario 2 costs ~14% less total and delivers Browse ~3 weeks faster. Cost-to-MVP is ~17% lower.
 
 ---
 
