@@ -44,7 +44,7 @@ from PowerPlatform.Dataverse.core.config import DataverseConfig
 # Configuration
 # =============================================================================
 
-ENV_URL = os.environ.get("POWERONE_ENV_URL", "https://<your-org>.crm.dynamics.com")
+ENV_URL = os.environ.get("POWERONE_ENV_URL", "https://<your-org>.crm.dynamics.com").rstrip("/")
 PREFIX = os.environ.get("POWERONE_PREFIX", "po")
 API_VERSION = "v9.2"
 
@@ -334,6 +334,23 @@ COLUMN_DISPLAY_NAMES = [
 # Helpers
 # =============================================================================
 
+def raise_for_status(resp):
+    """Raise with the Dataverse error message included."""
+    if resp.ok:
+        return
+    try:
+        body = resp.json()
+        error = body.get("error", {})
+        code = error.get("code", "")
+        msg = error.get("message", resp.text)
+        raise requests.HTTPError(
+            f"{resp.status_code} {resp.reason}: {code} — {msg}",
+            response=resp,
+        )
+    except (ValueError, KeyError):
+        resp.raise_for_status()
+
+
 def with_retry(fn, label="operation", max_retries=3, backoff=2):
     """Retry with exponential backoff for transient Dataverse errors."""
     for attempt in range(max_retries):
@@ -394,7 +411,7 @@ def create_memo_column(headers, base_url, table_logical_name, schema_name, displ
         json=payload,
         headers=headers,
     )
-    resp.raise_for_status()
+    raise_for_status(resp)
     print(f"  + Memo column: {schema_name} on {table_logical_name}")
 
 
@@ -476,7 +493,7 @@ def create_one_to_many(headers, base_url, parent_table, parent_pk, child_table,
         json=payload,
         headers=headers,
     )
-    resp.raise_for_status()
+    raise_for_status(resp)
     print(f"  + 1:N  {rel_name}  ({parent_table} -> {child_table}.{lookup_schema})")
 
 
@@ -531,7 +548,7 @@ def create_many_to_many(headers, base_url, entity1, entity1_display,
         json=payload,
         headers=headers,
     )
-    resp.raise_for_status()
+    raise_for_status(resp)
     print(f"  + N:N  {rel_name}  ({entity1} <-> {entity2})")
 
 
@@ -570,7 +587,7 @@ def create_global_optionset(headers, base_url, name, display_name, options):
         json=payload,
         headers=headers,
     )
-    resp.raise_for_status()
+    raise_for_status(resp)
     print(f"  + Global choice: {name} ({display_name}) — {len(options)} options")
 
 
@@ -600,7 +617,7 @@ def create_choice_column(headers, base_url, table_logical, column_schema, column
         json=payload,
         headers=headers,
     )
-    resp.raise_for_status()
+    raise_for_status(resp)
     print(f"  + Choice column: {table_logical}.{column_schema} → {global_choice_name}")
 
 
@@ -629,7 +646,7 @@ def set_table_display_name(headers, base_url, table_logical_name, display_name, 
         json=payload,
         headers=headers,
     )
-    resp.raise_for_status()
+    raise_for_status(resp)
     print(f"  + Table: {table_logical_name} → {display_name} ({plural_display_name})")
 
 
@@ -651,7 +668,7 @@ def set_column_display_name(headers, base_url, table_logical_name, column_logica
         json=payload,
         headers=headers,
     )
-    resp.raise_for_status()
+    raise_for_status(resp)
     print(f"  + Column: {table_logical_name}.{column_logical_name} → {display_name}")
 
 
