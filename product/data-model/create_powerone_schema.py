@@ -630,8 +630,31 @@ def create_choice_column(headers, base_url, table_logical, column_schema, column
     print(f"  + Choice column: {table_logical}.{column_schema} → {global_choice_guid}")
 
 
+def get_entity_metadata_id(headers, base_url, table_logical_name):
+    """Retrieve the MetadataId (GUID) for a table by logical name."""
+    resp = requests.get(
+        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions(LogicalName='{table_logical_name}')"
+        f"?$select=MetadataId",
+        headers=headers,
+    )
+    raise_for_status(resp)
+    return resp.json()["MetadataId"]
+
+
+def get_attribute_metadata_id(headers, base_url, table_logical_name, column_logical_name):
+    """Retrieve the MetadataId (GUID) for a column by logical name."""
+    resp = requests.get(
+        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions(LogicalName='{table_logical_name}')"
+        f"/Attributes(LogicalName='{column_logical_name}')?$select=MetadataId",
+        headers=headers,
+    )
+    raise_for_status(resp)
+    return resp.json()["MetadataId"]
+
+
 def set_table_display_name(headers, base_url, table_logical_name, display_name, plural_display_name):
     """Set the display name and plural display name for a table via Web API."""
+    metadata_id = get_entity_metadata_id(headers, base_url, table_logical_name)
     payload = {
         "DisplayName": {
             "@odata.type": "Microsoft.Dynamics.CRM.Label",
@@ -650,8 +673,8 @@ def set_table_display_name(headers, base_url, table_logical_name, display_name, 
             }],
         },
     }
-    resp = requests.patch(
-        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions(LogicalName='{table_logical_name}')",
+    resp = requests.put(
+        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions({metadata_id})",
         json=payload,
         headers=headers,
     )
@@ -661,6 +684,8 @@ def set_table_display_name(headers, base_url, table_logical_name, display_name, 
 
 def set_column_display_name(headers, base_url, table_logical_name, column_logical_name, display_name):
     """Set the display name for a column via Web API."""
+    entity_id = get_entity_metadata_id(headers, base_url, table_logical_name)
+    attr_id = get_attribute_metadata_id(headers, base_url, table_logical_name, column_logical_name)
     payload = {
         "DisplayName": {
             "@odata.type": "Microsoft.Dynamics.CRM.Label",
@@ -671,9 +696,9 @@ def set_column_display_name(headers, base_url, table_logical_name, column_logica
             }],
         },
     }
-    resp = requests.patch(
-        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions(LogicalName='{table_logical_name}')"
-        f"/Attributes(LogicalName='{column_logical_name}')",
+    resp = requests.put(
+        f"{base_url}/api/data/{API_VERSION}/EntityDefinitions({entity_id})"
+        f"/Attributes({attr_id})",
         json=payload,
         headers=headers,
     )
