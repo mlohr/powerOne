@@ -495,7 +495,7 @@ def discover_entity_sets(headers, base_url):
 
 
 def create_record(headers, base_url, entity_set, data):
-    """Create a record via Web API. Returns the GUID from OData-EntityId header."""
+    """Create a record via Web API. Returns the GUID from OData-EntityId header or response body."""
     resp = requests.post(
         f"{base_url}/api/data/{API_VERSION}/{entity_set}",
         json=data,
@@ -505,6 +505,18 @@ def create_record(headers, base_url, entity_set, data):
     # Extract GUID from OData-EntityId header
     entity_id = resp.headers.get("OData-EntityId", "")
     guid = entity_id.rstrip(")").rsplit("(", 1)[-1] if "(" in entity_id else ""
+    # Fallback: extract from response body (when using return=representation)
+    if not guid and resp.text:
+        try:
+            body = resp.json()
+            # Derive primary key field name from entity set (e.g., po_sprints -> po_sprintid)
+            singular = entity_set.rstrip("s")
+            if singular.endswith("ie"):  # e.g., po_activities -> po_activityid
+                singular = singular[:-2] + "y"
+            pk_field = f"{singular}id"
+            guid = body.get(pk_field, "")
+        except Exception:
+            pass
     return guid
 
 
