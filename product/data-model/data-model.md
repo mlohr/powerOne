@@ -46,7 +46,7 @@ A cross-entity strategic initiative that connects to multiple Objectives, provid
 A concrete to-do item assigned to a Key Result. Each task has a short description, an assigned owner (User), and a status (open or completed). Tasks bridge strategy to daily work without polluting the OKR structure.
 
 ### Sprint
-A time period with a naming convention of "number.year" (e.g., 1.26, 2.26), defined by start and end dates. Has a lifecycle of inactive → active → done, with only one Sprint active at a time based on current date.
+A time period with a naming convention of "year.number" (e.g., 26.1, 26.2), defined by start and end dates. Has a lifecycle of inactive → active → done, with only one Sprint active at a time based on current date.
 
 ### Ritual
 A planning session, check-in, review, or retrospective event linked to a Sprint.

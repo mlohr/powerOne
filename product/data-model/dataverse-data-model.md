@@ -17,7 +17,7 @@
 | 5 | Metric Update | `po_MetricUpdate` | A historical snapshot of a Metric's value at a point in time | Custom |
 | 6 | Task | `po_Task` | A concrete to-do item assigned to a Key Result, bridging strategy to daily work | Custom |
 | 7 | Program | `po_Program` | A cross-entity strategic initiative connecting multiple Objectives | Custom |
-| 8 | Sprint | `po_Sprint` | A time-boxed period (e.g., "1.26") with start/end dates and lifecycle | Custom |
+| 8 | Sprint | `po_Sprint` | A time-boxed period (e.g., "26.1") with start/end dates and lifecycle | Custom |
 | 9 | Ritual | `po_Ritual` | A planning session, check-in, review, or retrospective linked to a Sprint | Custom |
 | 10 | Saved Filter | `po_SavedFilter` | A user-defined reusable filter configuration for the OKR Hierarchy view | Custom |
 | 11 | Activity Update | `po_ActivityUpdate` | An audit log entry tracking changes to a Program | Custom |
@@ -115,7 +115,7 @@
 
 | Display Name | Schema Name | Data Type | Required | Description | Notes |
 |---|---|---|---|---|---|
-| Name | `po_Name` | String | Yes | Sprint label (e.g., "1.26") | Primary column |
+| Name | `po_Name` | String | Yes | Sprint label (e.g., "26.1") | Primary column |
 | Start Date | `po_StartDate` | DateTime | Yes | Sprint start | Date Only format |
 | End Date | `po_EndDate` | DateTime | Yes | Sprint end | Date Only format |
 | Status | `po_Status` | Choice | Yes | Sprint lifecycle | See `po_SprintStatus` |

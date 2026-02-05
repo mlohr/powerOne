@@ -6,7 +6,7 @@
       "keyResults": "Metric-driven measures of success that belong to an Objective. Each Key Result tracks progress toward an outcome.",
       "tasks": "Concrete to-do items assigned to Key Results that bridge strategy to daily work. Each task has a description, owner, and completion status.",
       "users": "People in the organization who own or contribute to OKRs.",
-      "sprints": "Time periods (e.g., '1.26', '2.26') when Objectives are active and tracked.",
+      "sprints": "Time periods (e.g., '26.1', '26.2') when Objectives are active and tracked.",
       "programs": "Cross-entity strategic initiatives that connect to multiple Objectives.",
       "savedFilters": "User-defined filter configurations that can be saved, named, and reused to quickly view specific sets of Objectives."
     },
@@ -121,7 +121,7 @@
         "avatar": null
       },
       "status": "Active",
-      "sprint": "1.26",
+      "sprint": "26.1",
       "progress": 65,
       "programIds": ["prog-001"],
       "parentObjectiveId": null,
@@ -360,7 +360,7 @@
         "avatar": null
       },
       "status": "Active",
-      "sprint": "1.26",
+      "sprint": "26.1",
       "progress": 70,
       "programIds": ["prog-001"],
       "parentObjectiveId": "obj-001",
@@ -396,7 +396,7 @@
         "avatar": null
       },
       "status": "Active",
-      "sprint": "1.26",
+      "sprint": "26.1",
       "progress": 45,
       "programIds": ["prog-002"],
       "parentObjectiveId": "obj-001",
@@ -440,7 +440,7 @@
         "avatar": null
       },
       "status": "Active",
-      "sprint": "1.26",
+      "sprint": "26.1",
       "progress": 80,
       "programIds": ["prog-001"],
       "parentObjectiveId": "obj-002",
@@ -550,7 +550,7 @@
         "avatar": null
       },
       "status": "Active",
-      "sprint": "1.26",
+      "sprint": "26.1",
       "progress": 55,
       "programIds": ["prog-003"],
       "parentObjectiveId": null,
@@ -651,7 +651,7 @@
         "avatar": null
       },
       "status": "Active",
-      "sprint": "1.26",
+      "sprint": "26.1",
       "progress": 70,
       "programIds": [],
       "parentObjectiveId": "obj-004",
@@ -743,7 +743,7 @@
         "avatar": null
       },
       "status": "Active",
-      "sprint": "1.26",
+      "sprint": "26.1",
       "progress": 40,
       "programIds": ["prog-003"],
       "parentObjectiveId": "obj-005",
@@ -779,7 +779,7 @@
         "avatar": null
       },
       "status": "Draft",
-      "sprint": "2.26",
+      "sprint": "26.2",
       "progress": 0,
       "programIds": [],
       "parentObjectiveId": "obj-006",
@@ -807,22 +807,22 @@
   ],
   "sprints": [
     {
-      "id": "1.26",
-      "name": "Sprint 1.26",
+      "id": "26.1",
+      "name": "Sprint 26.1",
       "startDate": "2026-01-01",
       "endDate": "2026-03-31",
       "status": "active"
     },
     {
-      "id": "2.26",
-      "name": "Sprint 2.26",
+      "id": "26.2",
+      "name": "Sprint 26.2",
       "startDate": "2026-04-01",
       "endDate": "2026-06-30",
       "status": "inactive"
     },
     {
-      "id": "4.25",
-      "name": "Sprint 4.25",
+      "id": "25.4",
+      "name": "Sprint 25.4",
       "startDate": "2025-10-01",
       "endDate": "2025-12-31",
       "status": "done"
@@ -911,7 +911,7 @@
       "isPreset": false,
       "criteria": {
         "organizationalUnitId": "ou-product-dev",
-        "sprint": "1.26",
+        "sprint": "26.1",
         "status": ["Active", "Draft"]
       },
       "createdBy": "user-007",

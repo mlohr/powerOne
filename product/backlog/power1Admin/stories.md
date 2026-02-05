@@ -82,7 +82,7 @@
 ### Acceptance Criteria
 
 - [ ] **Main form** configured with fields:
-  - Name (required, single line text, e.g., "1.26")
+  - Name (required, single line text, e.g., "26.1")
   - Start Date (required, date only)
   - End Date (required, date only)
   - Status (choice: Inactive / Active / Done)

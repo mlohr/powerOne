@@ -87,9 +87,9 @@ CHOICE_VALUES = {
 # =============================================================================
 
 SPRINTS = [
-    {"id": "1.26", "name": "Sprint 1.26", "startDate": "2026-01-01", "endDate": "2026-03-31", "status": "Active"},
-    {"id": "2.26", "name": "Sprint 2.26", "startDate": "2026-04-01", "endDate": "2026-06-30", "status": "Inactive"},
-    {"id": "4.25", "name": "Sprint 4.25", "startDate": "2025-10-01", "endDate": "2025-12-31", "status": "Done"},
+    {"id": "26.1", "name": "Sprint 26.1", "startDate": "2026-01-01", "endDate": "2026-03-31", "status": "Active"},
+    {"id": "26.2", "name": "Sprint 26.2", "startDate": "2026-04-01", "endDate": "2026-06-30", "status": "Inactive"},
+    {"id": "25.4", "name": "Sprint 25.4", "startDate": "2025-10-01", "endDate": "2025-12-31", "status": "Done"},
 ]
 
 ORG_UNITS = [
@@ -110,14 +110,14 @@ ORG_UNITS = [
 ]
 
 OBJECTIVES = [
-    {"id": "obj-001", "title": "Increase company-wide revenue growth", "description": "Drive sustainable revenue growth across all business entities and markets through strategic initiatives, new customer acquisition, and expansion of existing accounts.", "orgUnitId": "ou-group", "status": "Active", "sprintId": "1.26", "progress": 65, "parentObjectiveId": None},
-    {"id": "obj-002", "title": "Scale Germany entity revenue to \u20ac20M", "description": "Grow the German entity through enterprise sales acceleration, increased deal sizes, and strategic partnerships in the DACH region.", "orgUnitId": "ou-germany", "status": "Active", "sprintId": "1.26", "progress": 70, "parentObjectiveId": "obj-001"},
-    {"id": "obj-003", "title": "Launch operations in India", "description": "Establish a strong market presence in India by hiring local talent, signing pilot customers, and generating initial revenue.", "orgUnitId": "ou-india", "status": "Active", "sprintId": "1.26", "progress": 45, "parentObjectiveId": "obj-001"},
-    {"id": "obj-004", "title": "Accelerate enterprise customer acquisition", "description": "Build a repeatable sales process for enterprise customers with predictable pipeline generation and shortened sales cycles.", "orgUnitId": "ou-nbd", "status": "Active", "sprintId": "1.26", "progress": 80, "parentObjectiveId": "obj-002"},
-    {"id": "obj-005", "title": "Enhance product quality and delivery speed", "description": "Improve engineering velocity and product stability by reducing bugs, increasing deployment frequency, and automating quality processes.", "orgUnitId": "ou-production", "status": "Active", "sprintId": "1.26", "progress": 55, "parentObjectiveId": None},
-    {"id": "obj-006", "title": "Build a high-performing enterprise sales team", "description": "Recruit, onboard, and enable a world-class enterprise sales team capable of consistently exceeding quota targets.", "orgUnitId": "ou-enterprise-sales", "status": "Active", "sprintId": "1.26", "progress": 70, "parentObjectiveId": "obj-004"},
-    {"id": "obj-007", "title": "Automate deployment pipeline", "description": "Build fully automated CI/CD pipeline to enable rapid, reliable deployments with comprehensive test coverage.", "orgUnitId": "ou-product-dev", "status": "Active", "sprintId": "1.26", "progress": 40, "parentObjectiveId": "obj-005"},
-    {"id": "obj-008", "title": "Dominate Western region enterprise market", "description": "Become the #1 solution provider in the Western region by closing key enterprise accounts and building a strong pipeline.", "orgUnitId": "ou-sales-team-west", "status": "Draft", "sprintId": "2.26", "progress": 0, "parentObjectiveId": "obj-006"},
+    {"id": "obj-001", "title": "Increase company-wide revenue growth", "description": "Drive sustainable revenue growth across all business entities and markets through strategic initiatives, new customer acquisition, and expansion of existing accounts.", "orgUnitId": "ou-group", "status": "Active", "sprintId": "26.1", "progress": 65, "parentObjectiveId": None},
+    {"id": "obj-002", "title": "Scale Germany entity revenue to \u20ac20M", "description": "Grow the German entity through enterprise sales acceleration, increased deal sizes, and strategic partnerships in the DACH region.", "orgUnitId": "ou-germany", "status": "Active", "sprintId": "26.1", "progress": 70, "parentObjectiveId": "obj-001"},
+    {"id": "obj-003", "title": "Launch operations in India", "description": "Establish a strong market presence in India by hiring local talent, signing pilot customers, and generating initial revenue.", "orgUnitId": "ou-india", "status": "Active", "sprintId": "26.1", "progress": 45, "parentObjectiveId": "obj-001"},
+    {"id": "obj-004", "title": "Accelerate enterprise customer acquisition", "description": "Build a repeatable sales process for enterprise customers with predictable pipeline generation and shortened sales cycles.", "orgUnitId": "ou-nbd", "status": "Active", "sprintId": "26.1", "progress": 80, "parentObjectiveId": "obj-002"},
+    {"id": "obj-005", "title": "Enhance product quality and delivery speed", "description": "Improve engineering velocity and product stability by reducing bugs, increasing deployment frequency, and automating quality processes.", "orgUnitId": "ou-production", "status": "Active", "sprintId": "26.1", "progress": 55, "parentObjectiveId": None},
+    {"id": "obj-006", "title": "Build a high-performing enterprise sales team", "description": "Recruit, onboard, and enable a world-class enterprise sales team capable of consistently exceeding quota targets.", "orgUnitId": "ou-enterprise-sales", "status": "Active", "sprintId": "26.1", "progress": 70, "parentObjectiveId": "obj-004"},
+    {"id": "obj-007", "title": "Automate deployment pipeline", "description": "Build fully automated CI/CD pipeline to enable rapid, reliable deployments with comprehensive test coverage.", "orgUnitId": "ou-product-dev", "status": "Active", "sprintId": "26.1", "progress": 40, "parentObjectiveId": "obj-005"},
+    {"id": "obj-008", "title": "Dominate Western region enterprise market", "description": "Become the #1 solution provider in the Western region by closing key enterprise accounts and building a strong pipeline.", "orgUnitId": "ou-sales-team-west", "status": "Draft", "sprintId": "26.2", "progress": 0, "parentObjectiveId": "obj-006"},
 ]
 
 KEY_RESULTS = [
@@ -154,11 +154,11 @@ METRICS = [
 ]
 
 METRIC_UPDATES = [
-    {"id": "mu-001", "name": "Jan week 2 update", "metricId": "metric-008", "value": 12000000, "recordedAt": "2026-01-13T10:00:00Z", "sprintId": "1.26"},
-    {"id": "mu-002", "name": "Jan week 3 update", "metricId": "metric-008", "value": 22000000, "recordedAt": "2026-01-20T10:00:00Z", "sprintId": "1.26"},
-    {"id": "mu-003", "name": "Jan week 4 update", "metricId": "metric-008", "value": 35000000, "recordedAt": "2026-01-27T10:00:00Z", "sprintId": "1.26"},
-    {"id": "mu-004", "name": "Jan retention check", "metricId": "metric-009", "value": 87, "recordedAt": "2026-01-15T10:00:00Z", "sprintId": "1.26"},
-    {"id": "mu-005", "name": "Feb retention check", "metricId": "metric-009", "value": 89, "recordedAt": "2026-01-31T10:00:00Z", "sprintId": "1.26"},
+    {"id": "mu-001", "name": "Jan week 2 update", "metricId": "metric-008", "value": 12000000, "recordedAt": "2026-01-13T10:00:00Z", "sprintId": "26.1"},
+    {"id": "mu-002", "name": "Jan week 3 update", "metricId": "metric-008", "value": 22000000, "recordedAt": "2026-01-20T10:00:00Z", "sprintId": "26.1"},
+    {"id": "mu-003", "name": "Jan week 4 update", "metricId": "metric-008", "value": 35000000, "recordedAt": "2026-01-27T10:00:00Z", "sprintId": "26.1"},
+    {"id": "mu-004", "name": "Jan retention check", "metricId": "metric-009", "value": 87, "recordedAt": "2026-01-15T10:00:00Z", "sprintId": "26.1"},
+    {"id": "mu-005", "name": "Feb retention check", "metricId": "metric-009", "value": 89, "recordedAt": "2026-01-31T10:00:00Z", "sprintId": "26.1"},
 ]
 
 TASKS = [
@@ -242,7 +242,7 @@ RITUALS = [
     {
         "id": "ritual-001",
         "title": "Q1 2026 Planning Session",
-        "sprintId": "1.26",
+        "sprintId": "26.1",
         "type": "Planning",
         "status": "Completed",
         "dateTime": "2026-01-08T10:00:00Z",
@@ -254,7 +254,7 @@ RITUALS = [
     {
         "id": "ritual-002",
         "title": "January Check-in",
-        "sprintId": "1.26",
+        "sprintId": "26.1",
         "type": "Check-in",
         "status": "Completed",
         "dateTime": "2026-01-31T15:00:00Z",
@@ -266,7 +266,7 @@ RITUALS = [
     {
         "id": "ritual-003",
         "title": "February Check-in",
-        "sprintId": "1.26",
+        "sprintId": "26.1",
         "type": "Check-in",
         "status": "Upcoming",
         "dateTime": "2026-02-28T15:00:00Z",
@@ -278,7 +278,7 @@ RITUALS = [
     {
         "id": "ritual-004",
         "title": "March Check-in",
-        "sprintId": "1.26",
+        "sprintId": "26.1",
         "type": "Check-in",
         "status": "Upcoming",
         "dateTime": "2026-03-28T15:00:00Z",
@@ -290,7 +290,7 @@ RITUALS = [
     {
         "id": "ritual-005",
         "title": "Q1 2026 Review",
-        "sprintId": "1.26",
+        "sprintId": "26.1",
         "type": "Review",
         "status": "Upcoming",
         "dateTime": "2026-04-03T10:00:00Z",
@@ -302,7 +302,7 @@ RITUALS = [
     {
         "id": "ritual-006",
         "title": "Q1 2026 Retrospective",
-        "sprintId": "1.26",
+        "sprintId": "26.1",
         "type": "Retrospective",
         "status": "Upcoming",
         "dateTime": "2026-04-03T14:00:00Z",
@@ -314,7 +314,7 @@ RITUALS = [
     {
         "id": "ritual-007",
         "title": "Q4 2025 Review",
-        "sprintId": "4.25",
+        "sprintId": "25.4",
         "type": "Review",
         "status": "Completed",
         "dateTime": "2025-12-20T10:00:00Z",
@@ -326,7 +326,7 @@ RITUALS = [
     {
         "id": "ritual-008",
         "title": "Q4 2025 Retrospective",
-        "sprintId": "4.25",
+        "sprintId": "25.4",
         "type": "Retrospective",
         "status": "Completed",
         "dateTime": "2025-12-20T14:00:00Z",
@@ -342,7 +342,7 @@ SAVED_FILTERS = [
     {"id": "filter-my-entity", "name": "My Entity", "isPreset": True, "criteriaJson": '{"organizationalUnitId":"ou-germany"}', "isShared": True},
     {"id": "filter-my-domain", "name": "My Domain", "isPreset": True, "criteriaJson": '{"organizationalUnitId":"ou-hr"}', "isShared": True},
     {"id": "filter-custom-001", "name": "Active Enterprise Sales Goals", "isPreset": False, "criteriaJson": '{"organizationalUnitId":["ou-enterprise-sales","ou-sales-team-west"],"status":["Active"]}', "isShared": True},
-    {"id": "filter-custom-002", "name": "Q1 Product Development", "isPreset": False, "criteriaJson": '{"organizationalUnitId":"ou-product-dev","sprint":"1.26","status":["Active","Draft"]}', "isShared": False},
+    {"id": "filter-custom-002", "name": "Q1 Product Development", "isPreset": False, "criteriaJson": '{"organizationalUnitId":"ou-product-dev","sprint":"26.1","status":["Active","Draft"]}', "isShared": False},
 ]
 
 # N:N Associations — Program <-> Objective
