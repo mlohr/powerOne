@@ -27,11 +27,12 @@
 ### Design Decisions
 
 - **User**: Uses the standard `systemuser` table. No custom User table needed — Dataverse security and user management handles this.
-- **Admin**: Implemented as a Dataverse **security role**, not a separate table.
+- **Admin**: Implemented as a Dataverse **security role**, not a separate table. See [security-roles.md](security-roles.md).
 - **ObjectiveOwner**: A lookup from Objective → `systemuser`. Not a separate entity.
 - **ProgramLead**: An N:N relationship between Program and `systemuser`.
 - **KeyResultTeam**: An N:N relationship between Key Result and `systemuser`.
 - **ActivityUpdate**: Stored as a separate table with a lookup to Program (not embedded array), following Dataverse relational patterns.
+- **Security Roles**: Five custom security roles control access. See [security-roles.md](security-roles.md) for full documentation.
 
 ---
 
