@@ -1,0 +1,195 @@
+{
+  "currentUser": {
+    "id": "user-001",
+    "name": "Sarah Chen",
+    "email": "sarah.chen@company.com"
+  },
+  "activeSprint": {
+    "id": "sprint-026-1",
+    "name": "26.1",
+    "startDate": "2026-01-06",
+    "endDate": "2026-02-02",
+    "status": "active"
+  },
+  "organizationalUnits": [
+    {
+      "id": "org-entity-germany",
+      "name": "Germany",
+      "level": "Entity"
+    },
+    {
+      "id": "org-domain-nbd",
+      "name": "New Business Development",
+      "level": "Domain",
+      "parentId": "org-entity-germany"
+    },
+    {
+      "id": "org-team-growth",
+      "name": "Growth Team",
+      "level": "Team",
+      "parentId": "org-domain-nbd"
+    },
+    {
+      "id": "org-domain-production",
+      "name": "Production",
+      "level": "Domain",
+      "parentId": "org-entity-germany"
+    }
+  ],
+  "objectives": [
+    {
+      "id": "obj-001",
+      "title": "Expand market share in enterprise segment",
+      "organizationalUnitId": "org-entity-germany",
+      "sprintId": "sprint-026-1",
+      "status": "Active"
+    },
+    {
+      "id": "obj-002",
+      "title": "Increase qualified lead generation",
+      "organizationalUnitId": "org-domain-nbd",
+      "sprintId": "sprint-026-1",
+      "status": "Active"
+    },
+    {
+      "id": "obj-003",
+      "title": "Improve product delivery efficiency",
+      "organizationalUnitId": "org-domain-production",
+      "sprintId": "sprint-026-1",
+      "status": "Active"
+    },
+    {
+      "id": "obj-004",
+      "title": "Build high-performing growth engine",
+      "organizationalUnitId": "org-team-growth",
+      "sprintId": "sprint-026-1",
+      "status": "Active"
+    }
+  ],
+  "keyResults": [
+    {
+      "id": "kr-001",
+      "title": "Close 10 enterprise deals worth €500K+ each",
+      "objectiveId": "obj-001",
+      "sprintId": "sprint-026-1",
+      "status": "Active",
+      "metrics": [
+        {
+          "id": "metric-001",
+          "name": "Enterprise deals closed",
+          "scale": "absolute",
+          "direction": "increase",
+          "baseline": 0,
+          "currentValue": 3,
+          "target": 10,
+          "unit": "deals"
+        }
+      ]
+    },
+    {
+      "id": "kr-002",
+      "title": "Achieve 35% enterprise win rate",
+      "objectiveId": "obj-001",
+      "sprintId": "sprint-026-1",
+      "status": "Active",
+      "metrics": [
+        {
+          "id": "metric-002",
+          "name": "Win rate",
+          "scale": "percentage",
+          "direction": "increase",
+          "baseline": 22,
+          "currentValue": 28,
+          "target": 35,
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "kr-003",
+      "title": "Generate 500 qualified leads per month",
+      "objectiveId": "obj-002",
+      "sprintId": "sprint-026-1",
+      "status": "Active",
+      "metrics": [
+        {
+          "id": "metric-003",
+          "name": "Monthly qualified leads",
+          "scale": "absolute",
+          "direction": "increase",
+          "baseline": 320,
+          "currentValue": 425,
+          "target": 500,
+          "unit": "leads"
+        }
+      ]
+    },
+    {
+      "id": "kr-004",
+      "title": "Increase lead-to-opportunity conversion to 25%",
+      "objectiveId": "obj-002",
+      "sprintId": "sprint-026-1",
+      "status": "Active",
+      "metrics": [
+        {
+          "id": "metric-004",
+          "name": "Conversion rate",
+          "scale": "percentage",
+          "direction": "increase",
+          "baseline": 18,
+          "currentValue": 18,
+          "target": 25,
+          "unit": "%"
+        }
+      ]
+    },
+    {
+      "id": "kr-005",
+      "title": "Reduce average delivery time to 14 days",
+      "objectiveId": "obj-003",
+      "sprintId": "sprint-026-1",
+      "status": "Active",
+      "metrics": [
+        {
+          "id": "metric-005",
+          "name": "Average delivery time",
+          "scale": "absolute",
+          "direction": "decrease",
+          "baseline": 21,
+          "currentValue": 17,
+          "target": 14,
+          "unit": "days"
+        }
+      ]
+    },
+    {
+      "id": "kr-007",
+      "title": "Launch 3 growth experiments with measurable impact",
+      "objectiveId": "obj-004",
+      "sprintId": "sprint-026-1",
+      "status": "Active",
+      "metrics": [
+        {
+          "id": "metric-007",
+          "name": "Experiments launched",
+          "scale": "absolute",
+          "direction": "increase",
+          "baseline": 0,
+          "currentValue": 1,
+          "target": 3,
+          "unit": "experiments"
+        },
+        {
+          "id": "metric-008",
+          "name": "Average experiment impact score",
+          "scale": "score",
+          "direction": "increase",
+          "baseline": 0,
+          "currentValue": 0,
+          "target": 7,
+          "unit": "score (1-10)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+/* Design Tokens for PowerOne */
+
+:root {
+  /* Colors */
+  --color-primary: teal;
+  --color-secondary: blue;
+  --color-neutral: slate;
+
+  /* Typography */
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}

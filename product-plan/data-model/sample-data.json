@@ -1,0 +1,110 @@
+{
+  "organizationalUnits": [
+    { "id": "ou-group", "name": "group", "level": "Group", "parentId": null },
+    { "id": "ou-germany", "name": "Germany", "level": "Entity", "parentId": "ou-group" },
+    { "id": "ou-nbd", "name": "New Business Development", "level": "Domain", "parentId": "ou-germany" }
+  ],
+  "objectives": [
+    {
+      "id": "obj-001",
+      "title": "Increase company-wide revenue growth",
+      "description": "Drive sustainable revenue growth across all entities by expanding market share and improving customer retention.",
+      "organizationalUnitId": "ou-group",
+      "organizationalLevel": "Group",
+      "organizationalUnit": "group",
+      "owner": { "id": "user-001", "name": "Sarah Chen", "avatar": null },
+      "status": "Active",
+      "sprint": "26.1",
+      "progress": 65,
+      "programIds": ["prog-001"],
+      "parentObjectiveId": null,
+      "childObjectiveIds": ["obj-002"],
+      "keyResultCount": 2,
+      "keyResults": [
+        {
+          "id": "kr-001",
+          "title": "Achieve €50M in total revenue",
+          "objectiveId": "obj-001",
+          "status": "Active",
+          "progress": 70,
+          "linkedChildObjectiveId": "obj-002",
+          "tasks": [
+            {
+              "id": "task-001",
+              "keyResultId": "kr-001",
+              "description": "Review and approve Q1 revenue forecasts from all entities",
+              "owner": { "id": "user-001", "name": "Sarah Chen", "avatar": null },
+              "status": "completed",
+              "createdAt": "2026-01-07T09:00:00Z",
+              "completedAt": "2026-01-10T14:30:00Z"
+            },
+            {
+              "id": "task-002",
+              "keyResultId": "kr-001",
+              "description": "Schedule revenue review meetings with entity leads",
+              "owner": { "id": "user-001", "name": "Sarah Chen", "avatar": null },
+              "status": "open",
+              "createdAt": "2026-01-10T11:00:00Z",
+              "completedAt": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "obj-002",
+      "title": "Scale Germany entity revenue to €20M",
+      "description": "Grow the German entity by acquiring new enterprise customers and expanding existing accounts.",
+      "organizationalUnitId": "ou-germany",
+      "organizationalLevel": "Entity",
+      "organizationalUnit": "Germany",
+      "owner": { "id": "user-002", "name": "Marcus Weber", "avatar": null },
+      "status": "Active",
+      "sprint": "26.1",
+      "progress": 70,
+      "programIds": ["prog-001"],
+      "parentObjectiveId": "obj-001",
+      "childObjectiveIds": [],
+      "keyResultCount": 2,
+      "keyResults": [
+        {
+          "id": "kr-004",
+          "title": "Close 15 new enterprise deals",
+          "objectiveId": "obj-002",
+          "status": "Active",
+          "progress": 80,
+          "linkedChildObjectiveId": null,
+          "tasks": []
+        }
+      ]
+    }
+  ],
+  "sprints": [
+    { "id": "26.1", "name": "Sprint 26.1", "startDate": "2026-01-01", "endDate": "2026-03-31", "status": "active" },
+    { "id": "26.2", "name": "Sprint 26.2", "startDate": "2026-04-01", "endDate": "2026-06-30", "status": "inactive" }
+  ],
+  "programs": [
+    {
+      "id": "prog-001",
+      "name": "Global Revenue Acceleration",
+      "description": "Strategic initiative to accelerate revenue growth across all entities and markets.",
+      "leads": [{ "id": "user-001", "name": "Sarah Chen" }]
+    }
+  ],
+  "savedFilters": [
+    {
+      "id": "filter-my-okrs",
+      "name": "My OKRs",
+      "isPreset": true,
+      "criteria": { "owner": "user-001" },
+      "createdBy": null,
+      "isShared": true
+    }
+  ],
+  "currentUser": {
+    "id": "user-001",
+    "name": "Sarah Chen",
+    "entity": "Germany",
+    "domain": "HR"
+  }
+}
