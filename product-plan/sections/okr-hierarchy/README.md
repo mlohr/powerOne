@@ -51,6 +51,7 @@ Key props:
 
 ## Visual Reference (ASCII wireframe)
 
+```
 ╔══════════════════════════════════════════════════════════════════════════════════════════════╗
 ║  OKR Hierarchy                                          [≡] [⊞] [⛁]  [New Key Result] [+New Objective] ║
 ║  Manage objectives and key results across all organizational levels                          ║
@@ -192,3 +193,4 @@ STATE INDICATORS
 ├── Completed tasks: checkbox checked + strikethrough text
 ├── Collapsed task list: shows ▶ toggle + summary count only
 └── Cascade link: small arrow icon + teal hyperlink text
+```
